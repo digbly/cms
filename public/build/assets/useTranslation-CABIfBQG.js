@@ -1,1 +1,0 @@
-import{u as i}from"./app-D_SwDnGp.js";function f(o,r){let t=o;for(const n of r){if(typeof t!="object"||t===null)return;t=t[n]}if(typeof t=="string"||typeof t=="object")return t}function c(){const{translations:o}=i().props;return{t:(t,n)=>{const[e,...s]=t.split(".");if(!e||s.length===0)return n??t;const u=f(o?.[e]??{},s);return typeof u=="string"?u:n??t}}}export{c as u};

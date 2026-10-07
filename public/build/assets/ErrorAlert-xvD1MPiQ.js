@@ -1,1 +1,0 @@
-import{j as r}from"./app-D_SwDnGp.js";import{C as s}from"./circle-alert-CWo-ZkqB.js";function x({message:e}){return r.jsxs("div",{className:"flex items-center gap-2.5 rounded-xl border border-rose-500/20 bg-rose-500/10 p-3 text-xs text-rose-600 dark:text-rose-400",children:[r.jsx(s,{className:"h-4 w-4 shrink-0"}),r.jsx("span",{children:e})]})}export{x as E};
