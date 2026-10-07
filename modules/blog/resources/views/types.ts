@@ -28,6 +28,7 @@ export interface AdminPost {
     status: PostStatus;
     status_label: string;
     views: number;
+    thumb_url: string | null;
     user_id: string | null;
     categories: AdminCategory[];
     translations: PostTranslation[];
@@ -79,6 +80,8 @@ export interface PostPayload {
     user_id?: string | null;
     categories: string[];
     translations: PostTranslation[];
+    thumb_id?: string | null;
+    remove_thumb?: boolean;
 }
 
 export interface CategoryPayload {

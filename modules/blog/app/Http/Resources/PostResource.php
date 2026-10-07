@@ -22,6 +22,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'status', type: 'string', enum: ['draft', 'published']),
         new OA\Property(property: 'status_label', type: 'string', example: 'Published'),
         new OA\Property(property: 'views', type: 'integer', example: 0),
+        new OA\Property(property: 'thumb_url', type: 'string', nullable: true),
         new OA\Property(property: 'user_id', type: 'string', format: 'uuid', nullable: true),
         new OA\Property(property: 'author', type: AuthorResource::class, nullable: true),
         new OA\Property(
@@ -56,6 +57,7 @@ class PostResource extends JsonResource
             'status' => $this->resource->status?->value,
             'status_label' => $this->resource->status?->label(),
             'views' => $this->resource->views,
+            'thumb_url' => $this->resource->thumbUrl(),
             'user_id' => $this->resource->user_id,
             'author' => $this->whenLoaded(
                 'author',

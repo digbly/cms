@@ -14,10 +14,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Auth\Models\User;
 use Modules\Blog\Database\Factories\PostFactory;
 use Modules\Blog\Enums\PostStatus;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Post extends Model implements TranslatableContract
+class Post extends Model implements HasMedia, TranslatableContract
 {
-    use HasFactory, HasUuids, Translatable;
+    use HasFactory, HasUuids, InteractsWithMedia, Translatable;
 
     protected $table = 'posts';
 
@@ -55,6 +57,16 @@ class Post extends Model implements TranslatableContract
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('thumb')->singleFile();
+    }
+
+    public function thumbUrl(): ?string
+    {
+        return $this->getFirstMediaUrl('thumb') ?: null;
     }
 
     public function scopePublished(Builder $query): Builder

@@ -155,6 +155,7 @@ return [
             'slugPlaceholder' => 'post-slug',
             'status' => 'Status',
             'subtitle' => 'Fill in the post details below.',
+            'thumb' => 'Thumbnail',
             'title' => 'Title',
             'titlePlaceholder' => 'Post title',
             'titleRequired' => 'A title is required for {{locale}}.',

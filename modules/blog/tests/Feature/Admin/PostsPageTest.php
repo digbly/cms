@@ -2,7 +2,10 @@
 
 namespace Modules\Blog\Tests\Feature\Admin;
 
+use App\Models\MediaItem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 use Modules\Auth\Models\User;
 use Modules\Blog\Enums\PostStatus;
@@ -98,6 +101,57 @@ class PostsPageTest extends TestCase
             ->assertRedirect(route('admin.blog.posts.index'));
 
         $this->assertDatabaseHas('post_translations', ['slug' => 'hello-world', 'title' => 'Hello world']);
+    }
+
+    public function test_super_admin_can_attach_post_thumb_from_media_library(): void
+    {
+        Storage::fake('public');
+
+        $mediaItem = MediaItem::factory()->create();
+        $mediaItem->addMedia(UploadedFile::fake()->image('thumb.jpg', 400, 300))
+            ->toMediaCollection('default');
+
+        $this->actingAs($this->admin(), 'web')
+            ->post($this->base(), [
+                'status' => PostStatus::Published->value,
+                'translations' => [
+                    ['locale' => 'en', 'title' => 'With thumb', 'slug' => 'with-thumb'],
+                ],
+                'thumb_id' => $mediaItem->id,
+            ])
+            ->assertRedirect(route('admin.blog.posts.index'));
+
+        $post = Post::query()->firstOrFail();
+
+        $this->assertNotNull($post->thumbUrl());
+        $this->assertDatabaseHas('media', [
+            'model_type' => Post::class,
+            'model_id' => $post->id,
+            'collection_name' => 'thumb',
+        ]);
+    }
+
+    public function test_super_admin_can_remove_post_thumb(): void
+    {
+        Storage::fake('public');
+
+        $post = $this->makePost();
+        $post->addMedia(UploadedFile::fake()->image('thumb.jpg', 400, 300))
+            ->toMediaCollection('thumb');
+
+        $this->assertNotNull($post->thumbUrl());
+
+        $this->actingAs($this->admin(), 'web')
+            ->put($this->base().'/'.$post->id, [
+                'status' => PostStatus::Draft->value,
+                'remove_thumb' => true,
+                'translations' => [
+                    ['locale' => 'en', 'title' => 'No thumb', 'slug' => 'no-thumb'],
+                ],
+            ])
+            ->assertRedirect();
+
+        $this->assertNull($post->fresh()->thumbUrl());
     }
 
     public function test_post_content_is_sanitized_on_store(): void

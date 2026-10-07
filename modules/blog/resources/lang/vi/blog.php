@@ -155,6 +155,7 @@ return [
             'slugPlaceholder' => 'duong-dan-bai-viet',
             'status' => 'Trạng thái',
             'subtitle' => 'Điền thông tin bài viết bên dưới.',
+            'thumb' => 'Ảnh đại diện',
             'title' => 'Tiêu đề',
             'titlePlaceholder' => 'Tiêu đề bài viết',
             'titleRequired' => 'Cần có tiêu đề cho {{locale}}.',

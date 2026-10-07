@@ -15,6 +15,8 @@ use OpenApi\Attributes as OA;
     properties: [
         new OA\Property(property: 'status', type: 'string', enum: ['draft', 'published']),
         new OA\Property(property: 'user_id', type: 'string', format: 'uuid', nullable: true),
+        new OA\Property(property: 'thumb_id', type: 'string', format: 'uuid', nullable: true),
+        new OA\Property(property: 'remove_thumb', type: 'boolean', nullable: true),
         new OA\Property(
             property: 'categories',
             type: 'array',
@@ -56,6 +58,8 @@ class UpdatePostRequest extends FormRequest
         return [
             'status' => ['sometimes', Rule::enum(PostStatus::class)],
             'user_id' => ['nullable', 'uuid', 'exists:users,id'],
+            'thumb_id' => ['nullable', 'uuid', 'exists:media_items,id'],
+            'remove_thumb' => ['nullable', 'boolean'],
             'categories' => ['sometimes', 'array'],
             'categories.*' => Rule::exists('post_categories', 'id'),
             'translations' => ['sometimes', 'array', 'min:1'],

@@ -15,6 +15,7 @@ use OpenApi\Attributes as OA;
     properties: [
         new OA\Property(property: 'status', type: 'string', enum: ['draft', 'published']),
         new OA\Property(property: 'user_id', type: 'string', format: 'uuid', nullable: true),
+        new OA\Property(property: 'thumb_id', type: 'string', format: 'uuid', nullable: true),
         new OA\Property(
             property: 'categories',
             type: 'array',
@@ -53,6 +54,7 @@ class StorePostRequest extends FormRequest
         return [
             'status' => ['required', Rule::enum(PostStatus::class)],
             'user_id' => ['nullable', 'uuid', 'exists:users,id'],
+            'thumb_id' => ['nullable', 'uuid', 'exists:media_items,id'],
             'categories' => ['nullable', 'array'],
             'categories.*' => Rule::exists('post_categories', 'id'),
             'translations' => ['required', 'array', 'min:1'],

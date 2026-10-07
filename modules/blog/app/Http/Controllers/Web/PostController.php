@@ -3,6 +3,7 @@
 namespace Modules\Blog\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\MediaItem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
@@ -99,6 +100,10 @@ class PostController extends Controller
                 'user_id' => $data['user_id'] ?? $request->user()->getKey(),
             ]);
 
+            if (! empty($data['thumb_id'])) {
+                $this->syncThumb($post, $data['thumb_id']);
+            }
+
             $this->syncTranslations($post, $data['translations']);
             $post->categories()->sync($data['categories'] ?? []);
         });
@@ -117,6 +122,12 @@ class PostController extends Controller
                 'status' => $data['status'] ?? $post->status->value,
                 'user_id' => $request->has('user_id') ? $data['user_id'] : $post->user_id,
             ]);
+
+            if (! empty($data['thumb_id'])) {
+                $this->syncThumb($post, $data['thumb_id']);
+            } elseif ($request->boolean('remove_thumb')) {
+                $post->clearMediaCollection('thumb');
+            }
 
             if (isset($data['translations'])) {
                 $this->syncTranslations($post, $data['translations']);
@@ -137,6 +148,21 @@ class PostController extends Controller
         $post->delete();
 
         return back()->with('success', __('blog.posts.notices.deleted'));
+    }
+
+    /**
+     * Copy a media library item into the post's own thumbnail collection.
+     */
+    protected function syncThumb(Post $post, string $mediaItemId): void
+    {
+        $media = MediaItem::query()->find($mediaItemId)?->getFirstMedia();
+
+        if ($media === null) {
+            return;
+        }
+
+        $post->clearMediaCollection('thumb');
+        $media->copy($post, 'thumb');
     }
 
     /**
@@ -169,6 +195,6 @@ class PostController extends Controller
      */
     protected function resourceRelations(): array
     {
-        return ['translations', 'categories.translations', 'author'];
+        return ['translations', 'categories.translations', 'author', 'media'];
     }
 }

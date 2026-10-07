@@ -3,15 +3,34 @@ import { ImagePlus, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import MediaPickerModal, { type MediaItemSummary } from './MediaPickerModal';
 
+export interface MediaPreview {
+    url: string | null;
+    thumb_url: string | null;
+}
+
 interface MediaFieldProps {
     label: string;
     value: string | null;
-    preview: MediaItemSummary | null;
+    preview: MediaPreview | null;
     onChange: (id: string | null) => void;
 }
 
 export default function MediaField({ label, value, preview, onChange }: MediaFieldProps) {
     const [open, setOpen] = useState(false);
+    const [selection, setSelection] = useState<MediaPreview | null>();
+
+    const current = selection === undefined ? preview : selection;
+
+    const choose = (item: MediaItemSummary) => {
+        setSelection(item);
+        onChange(item.id);
+        setOpen(false);
+    };
+
+    const remove = () => {
+        setSelection(null);
+        onChange(null);
+    };
 
     return (
         <div>
@@ -21,9 +40,9 @@ export default function MediaField({ label, value, preview, onChange }: MediaFie
 
             <div className="flex items-center gap-3">
                 <span className="flex h-16 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800/60">
-                    {preview?.url ? (
+                    {current?.url ? (
                         <img
-                            src={preview.thumb_url ?? preview.url}
+                            src={current.thumb_url ?? current.url}
                             alt={label}
                             className="h-full w-full object-contain"
                         />
@@ -39,7 +58,7 @@ export default function MediaField({ label, value, preview, onChange }: MediaFie
                     {value && (
                         <button
                             type="button"
-                            onClick={() => onChange(null)}
+                            onClick={remove}
                             className="inline-flex items-center gap-1 text-xs text-rose-500 hover:underline"
                         >
                             <X className="h-3 w-3" />
@@ -49,10 +68,7 @@ export default function MediaField({ label, value, preview, onChange }: MediaFie
                 </div>
             </div>
 
-            <MediaPickerModal open={open} onClose={() => setOpen(false)} onSelect={(item) => {
-                onChange(item.id);
-                setOpen(false);
-            }} />
+            <MediaPickerModal open={open} onClose={() => setOpen(false)} onSelect={choose} />
         </div>
     );
 }
