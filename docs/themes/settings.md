@@ -42,10 +42,26 @@
   points to `themes/statuses.json`; `activators.database.key` (default `theme`)
   is the settings key that holds the active theme name.
 
-## Theme settings
+## Register theme settings (backend)
 
-Per-theme options registered in code and edited through the customizer are
-covered in [Theme Settings](../the-basics/theme-settings.md).
+Per-theme options are defined in code by the theme service provider and surfaced
+to the customizer. Register them from `boot()`:
+
+```php
+use App\Facades\ThemeSetting;
+
+protected function registerThemeSettings(): void
+{
+    ThemeSetting::make('home_page')
+        ->type('string')
+        ->default(null)
+        ->add();
+}
+```
+
+Values are read at runtime with `theme_setting('home_page')` for the active
+theme. The full builder API, customizer panels and homepage control are covered
+in [Theme Settings](../the-basics/theme-settings.md).
 
 ## See also
 

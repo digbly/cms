@@ -30,6 +30,47 @@ Blade templates under `resources/views` (`pages/**/*.tsx`). Blade only compiles
 - Build with `php artisan theme:build default` (or `--dev` for the Vite dev
   server) — see [Asset Compilation](assets.md).
 
+## Register templates & blocks (backend)
+
+Register a theme's page templates and the blocks they accept from the theme
+service provider's `boot()`:
+
+```php
+use App\Facades\PageBlock;
+use App\Facades\PageTemplate;
+use App\Models\Pages\PageBlock as PageBlockModel;
+
+protected function registerPageTemplates(): void
+{
+    PageTemplate::make('landing', fn () => [
+        'label' => __('default::messages.page_template_landing'),
+        'blocks' => [
+            'content' => __('default::messages.page_container_content'),
+        ],
+    ]);
+}
+
+protected function registerPageBlocks(): void
+{
+    PageBlock::make('hero', fn () => [
+        'label' => __('default::messages.page_block_hero'),
+        'component' => 'Blocks/Hero',
+    ]);
+
+    PageBlock::make('posts', fn () => [
+        'label' => __('default::messages.page_block_posts'),
+        'component' => 'Blocks/Posts',
+        'data' => fn (PageBlockModel $block, array $data): array => [
+            'posts' => $this->presentPosts($this->postsForBlock($data)),
+        ],
+    ]);
+}
+```
+
+A template's `blocks` maps each **container key** to its label; a block's
+`component` is the frontend key the theme's `BlockRenderer` switches on. Register
+them from the theme provider so an inactive theme contributes neither.
+
 ## Blocks
 
 Page blocks and widgets registered with a `component` (and an optional `data`

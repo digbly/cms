@@ -151,6 +151,7 @@ docs/           In-depth guides for the basics, modules and themes
 - [Navigation Menus](docs/the-basics/navigation-menus.md)
 - [Widgets & Sidebars](docs/the-basics/widgets.md)
 - [Pages, Templates & Blocks](docs/the-basics/pages.md)
+- [Sitemap](docs/the-basics/sitemap.md)
 
 **Modules**
 - [Information](docs/modules/information.md)
