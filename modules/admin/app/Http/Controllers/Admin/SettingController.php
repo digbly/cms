@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Admin\Http\Controllers\Web;
+namespace Modules\Admin\Http\Controllers\Admin;
 
 use App\Contracts\Setting as SettingContract;
 use App\Http\Controllers\Controller;

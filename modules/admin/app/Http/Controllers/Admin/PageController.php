@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Admin\Http\Controllers\Web;
+namespace Modules\Admin\Http\Controllers\Admin;
 
 use App\Enums\PageStatus;
 use App\Http\Controllers\Controller;
@@ -10,7 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Admin\Enums\PagePermission;
-use Modules\Admin\Http\Controllers\Web\Concerns\AuthorizesAdmin;
+use Modules\Admin\Http\Controllers\Admin\Concerns\AuthorizesAdmin;
 use Modules\Admin\Http\Requests\Admin\IndexPageRequest;
 use Modules\Admin\Http\Requests\Admin\PageRequest;
 use Modules\Admin\Http\Resources\PageResource;

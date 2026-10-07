@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Admin\Http\Controllers\Web;
+namespace Modules\Admin\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Role;
@@ -20,10 +20,6 @@ use Modules\Auth\Models\User;
 
 /**
  * Inertia-facing user management.
- *
- * The mutation logic mirrors {@see \Modules\Admin\Http\Controllers\Admin\UserController}
- * (the JSON API). Extracting it into a shared action is planned; keeping it
- * here avoids coupling the web layer to the API resource responses.
  */
 class UserController extends Controller
 {

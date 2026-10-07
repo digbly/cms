@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Admin\Http\Controllers\Web;
+namespace Modules\Admin\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Menus\Menu;
@@ -11,7 +11,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Admin\Actions\Menu\UpdateMenu;
 use Modules\Admin\Enums\MenuPermission;
-use Modules\Admin\Http\Controllers\Web\Concerns\AuthorizesAdmin;
+use Modules\Admin\Http\Controllers\Admin\Concerns\AuthorizesAdmin;
 use Modules\Admin\Http\Requests\Admin\MenuRequest;
 use Modules\Admin\Http\Resources\MenuResource;
 use Modules\Admin\Support\MenuCatalog;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Admin\Http\Controllers\Web;
+namespace Modules\Admin\Http\Controllers\Admin;
 
 use App\Facades\Sidebar;
 use App\Http\Controllers\Controller;
@@ -10,7 +10,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Admin\Actions\Widget\UpdateSidebarWidgets;
 use Modules\Admin\Enums\WidgetPermission;
-use Modules\Admin\Http\Controllers\Web\Concerns\AuthorizesAdmin;
+use Modules\Admin\Http\Controllers\Admin\Concerns\AuthorizesAdmin;
 use Modules\Admin\Http\Requests\Admin\WidgetUpdateRequest;
 use Modules\Admin\Support\WidgetCatalog;
 

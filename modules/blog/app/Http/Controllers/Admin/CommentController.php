@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Blog\Http\Controllers\Web;
+namespace Modules\Blog\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Builder;
@@ -8,7 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Modules\Admin\Http\Controllers\Web\Concerns\AuthorizesAdmin;
+use Modules\Admin\Http\Controllers\Admin\Concerns\AuthorizesAdmin;
 use Modules\Blog\Enums\Permission;
 use Modules\Blog\Http\Requests\Admin\IndexCommentRequest;
 use Modules\Blog\Http\Requests\Admin\UpdateCommentRequest;
@@ -17,9 +17,6 @@ use Modules\Blog\Models\Comment;
 
 /**
  * Inertia-facing comment moderation.
- *
- * Mirrors {@see \Modules\Blog\Http\Controllers\Admin\CommentController} for
- * the web surface.
  */
 class CommentController extends Controller
 {

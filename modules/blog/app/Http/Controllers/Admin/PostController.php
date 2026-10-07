@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Blog\Http\Controllers\Web;
+namespace Modules\Blog\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\MediaItem;
@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
-use Modules\Admin\Http\Controllers\Web\Concerns\AuthorizesAdmin;
+use Modules\Admin\Http\Controllers\Admin\Concerns\AuthorizesAdmin;
 use Modules\Blog\Enums\Permission;
 use Modules\Blog\Http\Controllers\Concerns\SyncsTranslations;
 use Modules\Blog\Http\Requests\Admin\IndexPostRequest;
@@ -24,9 +24,6 @@ use Modules\Blog\Models\Post;
 
 /**
  * Inertia-facing post management.
- *
- * The mutation logic mirrors {@see \Modules\Blog\Http\Controllers\Admin\PostController}
- * (the JSON API) but returns Inertia pages and redirects instead of resources.
  */
 class PostController extends Controller
 {

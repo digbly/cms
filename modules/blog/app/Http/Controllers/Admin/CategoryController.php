@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Blog\Http\Controllers\Web;
+namespace Modules\Blog\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Builder;
@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
-use Modules\Admin\Http\Controllers\Web\Concerns\AuthorizesAdmin;
+use Modules\Admin\Http\Controllers\Admin\Concerns\AuthorizesAdmin;
 use Modules\Blog\Enums\Permission;
 use Modules\Blog\Http\Controllers\Concerns\SyncsTranslations;
 use Modules\Blog\Http\Requests\Admin\IndexCategoryRequest;
@@ -21,9 +21,6 @@ use Modules\Blog\Models\Category;
 
 /**
  * Inertia-facing category management.
- *
- * Mirrors {@see \Modules\Blog\Http\Controllers\Admin\CategoryController} for
- * the web surface.
  */
 class CategoryController extends Controller
 {

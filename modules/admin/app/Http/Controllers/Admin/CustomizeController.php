@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Admin\Http\Controllers\Web;
+namespace Modules\Admin\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
@@ -10,7 +10,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Admin\Actions\Customize\UpdateCustomize;
 use Modules\Admin\Enums\ThemePermission;
-use Modules\Admin\Http\Controllers\Web\Concerns\AuthorizesAdmin;
+use Modules\Admin\Http\Controllers\Admin\Concerns\AuthorizesAdmin;
 use Modules\Admin\Http\Requests\Admin\Customize\SettingRequest;
 use Modules\Admin\Support\CustomizeCatalog;
 use Modules\Admin\Support\MediaPreviewResolver;

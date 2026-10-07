@@ -9,15 +9,15 @@ use Modules\Admin\Enums\SettingPermission;
 use Modules\Admin\Enums\ThemePermission;
 use Modules\Admin\Enums\UserPermission;
 use Modules\Admin\Enums\WidgetPermission;
-use Modules\Admin\Http\Controllers\Web\CustomizeController;
-use Modules\Admin\Http\Controllers\Web\DashboardController;
-use Modules\Admin\Http\Controllers\Web\MediaController;
-use Modules\Admin\Http\Controllers\Web\MenuController;
-use Modules\Admin\Http\Controllers\Web\PageController;
-use Modules\Admin\Http\Controllers\Web\SettingController;
+use Modules\Admin\Http\Controllers\Admin\CustomizeController;
+use Modules\Admin\Http\Controllers\Admin\DashboardController;
+use Modules\Admin\Http\Controllers\Admin\MediaController;
+use Modules\Admin\Http\Controllers\Admin\MenuController;
+use Modules\Admin\Http\Controllers\Admin\PageController;
+use Modules\Admin\Http\Controllers\Admin\SettingController;
+use Modules\Admin\Http\Controllers\Admin\UserController;
+use Modules\Admin\Http\Controllers\Admin\WidgetController;
 use Modules\Admin\Http\Controllers\Web\SitemapController;
-use Modules\Admin\Http\Controllers\Web\UserController;
-use Modules\Admin\Http\Controllers\Web\WidgetController;
 use Modules\Admin\Http\Middleware\RequireAdminPermission;
 
 Route::get('sitemap.xml', [SitemapController::class, 'index'])
