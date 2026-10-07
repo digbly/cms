@@ -1,1 +1,0 @@
-{"version":3,"file":"useResyncOnReconnect.d.ts","sourceRoot":"","sources":["../src/useResyncOnReconnect.ts"],"names":[],"mappings":"AAKA,wBAAgB,oBAAoB,CAAC,CAAC,EAAE,eAAe,CAAC,EAAE,MAAM,CAAC;8BAelD,OAAO,mBACC,MAAM,CAAC,YACd,CAAC,KAAK,EAAE,CAAC,KAAK,IAAI;wBAoBpB,OAAO,mBAAmB,MAAM,CAAC;EAS9C"}

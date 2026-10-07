@@ -1,1 +1,0 @@
-import "./toPairs.mjs";
