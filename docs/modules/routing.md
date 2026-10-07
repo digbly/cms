@@ -1,87 +1,40 @@
-# Routing
+# Modules — Routing
 
-Juzaweb CMS expands Laravel's routing with specialized macros to simplified Admin and API route registration. These macros use the `RouteResource` facade.
+Module routes live in `modules/<name>/routes/web.php` and are mapped by the
+module's `RouteServiceProvider` under the `web` middleware group. All admin
+routes are grouped under `config('app.admin_prefix')` and named `admin.*`.
 
-## Admin Config Routes
-
-Use the `Route::admin` macro to register standard CRUD routes for the Admin Panel.
+`modules/reports/routes/web.php`:
 
 ```php
 use Illuminate\Support\Facades\Route;
+use Modules\Admin\Http\Middleware\RequireAdminPermission;
+use Modules\Reports\Enums\Permission;
+use Modules\Reports\Http\Controllers\Web\ReportController;
 
-Route::admin('posts', 'PostController');
+Route::middleware(['auth:web'])
+    ->prefix(config('app.admin_prefix', 'admin'))
+    ->group(function () {
+        Route::prefix('reports')->name('admin.reports.')->group(function () {
+            Route::get('/', [ReportController::class, 'index'])
+                ->middleware(RequireAdminPermission::class.':'.Permission::View->value)
+                ->name('index');
+        });
+    });
 ```
 
-This single line registers the following routes:
+## Conventions
 
-| Method | URI | Action | Route Name |
-| :--- | :--- | :--- | :--- |
-| GET | `posts` | `index` | `posts.index` |
-| GET | `posts/create` | `create` | `posts.create` |
-| POST | `posts` | `store` | `posts.store` |
-| GET | `posts/{id}/edit` | `edit` | `posts.edit` |
-| PUT | `posts/{id}` | `update` | `posts.update` |
-| DELETE | `posts/{id}` | `destroy` | `posts.destroy` |
-| POST | `posts/bulk` | `bulk` | `posts.bulk` |
+- Always wrap routes in `middleware(['auth:web'])` and the admin prefix group.
+- Name routes `admin.<module>.<resource>.<action>` (`index`, `create`, `store`,
+  `edit`, `update`, `destroy`), matching the existing admin and blog modules.
+- Guard every action with `RequireAdminPermission::class.':'.<Permission>::<Action>->value`.
+  The same permission string is used on the [menu item](../the-basics/menus.md)
+  and the permission enum — see [Permissions](../the-basics/permissions.md).
+- The frontend builds URLs from the route names with `route()`; never hard-code
+  the admin prefix.
 
-### Customizing Admin Routes
+## See also
 
-You can chain methods to customize the generated routes (inherited from parameters or specific logic if applicable, currently standard Resource methods).
-
-## API Routes
-
-Use the `Route::api` macro to register RESTful API routes with built-in scope and permission handling.
-
-```php
-Route::api('posts', 'Api\PostController');
-```
-
-This registers:
-
-| Method | URI | Action |
-| :--- | :--- | :--- |
-| GET | `posts` | `index` |
-| GET | `posts/{id}` | `show` |
-| POST | `posts` | `store` |
-| PUT | `posts/{id}` | `update` |
-| DELETE | `posts/{id}` | `destroy` |
-| POST | `posts/bulk` | `bulk` |
-
-### API fluent methods
-
-The `Route::api` macro returns an `APIResource` instance, allowing you to chain methods for configuration.
-
-#### exceptBulkAction()
-
-Exclude the bulk action route.
-
-```php
-Route::api('posts', 'Api\PostController')->exceptBulkAction();
-```
-
-#### guestable(bool $allow = true)
-
-Allow guest access (no authentication middleware) for specific methods.
-
-```php
-Route::api('public-posts', 'Api\PublicPostController')->guestable();
-```
-
-Diffault guest methods are `index` and `show`. You can customize this:
-
-```php
-Route::api('posts', 'Api\PostController')
-    ->guestable()
-    ->guestMethods(['index', 'show', 'search']);
-```
-
-#### Scopes
-
-Customize OAuth2 scopes for read/write actions.
-
-```php
-Route::api('posts', 'Api\PostController')
-    ->scopeName('posts') // Default is route name
-    ->readScopes(['posts.read'])
-    ->writeScopes(['posts.write']);
-```
+- [Make CRUD](crud.md) · [Information](information.md)
+- [Permissions](../the-basics/permissions.md)

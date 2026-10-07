@@ -1,0 +1,177 @@
+<?php declare(strict_types=1);
+
+/**
+ * @license Apache 2.0
+ */
+
+namespace OpenApi\Annotations;
+
+use OpenApi\Undefined;
+
+/**
+ * Holds a set of reusable objects for different aspects of the OA.
+ *
+ * All objects defined within the components object will have no effect on the API unless they are explicitly
+ * referenced from properties outside the components object.
+ *
+ * @see [Components Object](https://spec.openapis.org/oas/v3.1.1.html#components-object)
+ *
+ * @Annotation
+ */
+class Components extends AbstractAnnotation
+{
+    public const COMPONENTS_PREFIX = '#/components/';
+
+    /**
+     * Schema reference.
+     *
+     * @var string
+     */
+    public const SCHEMA_REF = '#/components/schemas/';
+
+    /**
+     * Reusable Schemas.
+     *
+     * @var array<Schema|\OpenApi\Attributes\Schema>
+     */
+    public $schemas = Undefined::UNDEFINED;
+
+    /**
+     * Reusable Responses.
+     *
+     * @var list<Response>
+     */
+    public $responses = Undefined::UNDEFINED;
+
+    /**
+     * Reusable Parameters.
+     *
+     * @var list<Parameter>
+     */
+    public $parameters = Undefined::UNDEFINED;
+
+    /**
+     * Reusable Examples.
+     *
+     * @var array<Examples>
+     */
+    public $examples = Undefined::UNDEFINED;
+
+    /**
+     * Reusable Request Bodies.
+     *
+     * @var list<RequestBody>
+     */
+    public $requestBodies = Undefined::UNDEFINED;
+
+    /**
+     * Reusable Headers.
+     *
+     * @var list<Header>
+     */
+    public $headers = Undefined::UNDEFINED;
+
+    /**
+     * Reusable Security Schemes.
+     *
+     * @var list<SecurityScheme>
+     */
+    public $securitySchemes = Undefined::UNDEFINED;
+
+    /**
+     * Reusable Links.
+     *
+     * @var list<Link>
+     */
+    public $links = Undefined::UNDEFINED;
+
+    /**
+     * Reusable Callbacks.
+     *
+     * @var array
+     */
+    public $callbacks = Undefined::UNDEFINED;
+
+    /**
+     * @inheritdoc
+     */
+    public static $_parents = [
+        OpenApi::class,
+    ];
+
+    /**
+     * @inheritdoc
+     */
+    public static $_nested = [
+        Response::class => ['responses', 'response'],
+        Parameter::class => ['parameters', 'parameter'],
+        PathParameter::class => ['parameters', 'parameter'],
+        RequestBody::class => ['requestBodies', 'request'],
+        Examples::class => ['examples', 'example'],
+        Header::class => ['headers', 'header'],
+        SecurityScheme::class => ['securitySchemes', 'securityScheme'],
+        Link::class => ['links', 'link'],
+        Schema::class => ['schemas', 'schema'],
+        Attachable::class => ['attachables'],
+    ];
+
+    /**
+     * Returns a list of component annotation types.
+     *
+     * Each may be used as a root to resolve component refs
+     */
+    public static function componentTypes(): array
+    {
+        return array_filter(array_keys(self::$_nested), static fn (string $value): bool => $value !== Attachable::class);
+    }
+
+    /**
+     * Generate a <code>#/components/...</code> reference for the given annotation.
+     *
+     * A <code>string</code> component value always assumes type <code>Schema</code>.
+     *
+     * @param AbstractAnnotation|string $component
+     */
+    public static function ref($component, bool $encode = true): string
+    {
+        if ($component instanceof AbstractAnnotation) {
+            foreach (Components::$_nested as $type => $nested) {
+                // exclude attachables
+                if (2 == count($nested)) {
+                    if ($component instanceof $type) {
+                        $type = $nested[0];
+                        $name = $component->{$nested[1]};
+                        break;
+                    }
+                }
+            }
+        } else {
+            $type = 'schemas';
+            $name = $component;
+        }
+
+        return self::COMPONENTS_PREFIX . $type . '/' . ($encode ? static::refEncode((string) $name) : $name);
+    }
+
+    /**
+     * Escapes the special characters "/" and "~".
+     *
+     * https://swagger.io/docs/specification/using-ref/
+     * https://tools.ietf.org/html/rfc6901#page-3
+     */
+    public static function refEncode(string $raw): string
+    {
+        return str_replace('/', '~1', str_replace('~', '~0', $raw));
+    }
+
+    /**
+     * Converted the escaped characters "~1" and "~" back to "/" and "~".
+     *
+     * https://swagger.io/docs/specification/using-ref/
+     * https://tools.ietf.org/html/rfc6901#page-3
+     */
+    public static function refDecode(string $encoded): string
+    {
+        return str_replace('~1', '/', str_replace('~0', '~', $encoded));
+    }
+}

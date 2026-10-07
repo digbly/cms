@@ -1,7 +1,0 @@
-{
-    "The :attribute must contain at least one letter.": "Το :attribute πρέπει να περιέχει τουλάχιστον ένα γράμμα.",
-    "The :attribute must contain at least one number.": "Το :attribute πρέπει να περιέχει τουλάχιστον έναν αριθμό.",
-    "The :attribute must contain at least one symbol.": "Το :attribute πρέπει να περιέχει τουλάχιστον ένα σύμβολο.",
-    "The :attribute must contain at least one uppercase and one lowercase letter.": "Το :attribute πρέπει να περιέχει τουλάχιστον ένα κεφαλαίο και ένα πεζό γράμμα.",
-    "The given :attribute has appeared in a data leak. Please choose a different :attribute.": "Το δεδομένο :attribute έχει εμφανιστεί σε διαρροή δεδομένων. Παρακαλούμε επιλέξτε ένα διαφορετικό :attribute."
-}

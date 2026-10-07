@@ -1,0 +1,53 @@
+{
+  "dependencies": {
+    "react": {
+      "$remove": true
+    },
+    "react-dom": {
+      "$remove": true
+    }
+  },
+  "scripts": {
+    "$remove": true
+  },
+  "devDependencies": {
+    "$remove": true
+  },
+  "config": {
+    "$remove": true
+  },
+  "name": "swagger-ui-react",
+  "main": "index.cjs",
+  "module": "index.mjs",
+  "exports": {
+    "$replace": {
+      "./swagger-ui.css": "./swagger-ui.css",
+      ".": {
+        "import": "./index.mjs",
+        "require": "./index.cjs"
+      }
+    }
+  },
+  "imports": {
+    "$replace": {
+      "#swagger-ui": {
+        "browser": {
+          "import": "./swagger-ui-es-bundle-core.js",
+          "require": "./swagger-ui.js"
+        },
+        "node": {
+          "import": "./swagger-ui-bundle.js",
+          "require": "./swagger-ui-es-bundle.js"
+        },
+        "default": {
+          "import": "./swagger-ui-bundle.js",
+          "require": "./swagger-ui-es-bundle.js"
+        }
+      }
+    }
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0 <20",
+    "react-dom": ">=16.8.0 <20"
+  }
+}

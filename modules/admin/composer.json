@@ -1,20 +1,30 @@
 {
     "name": "juzaweb/admin",
-    "description": "Juzaweb CMS Admin",
-    "keywords": [],
-    "license": "MIT",
-    "homepage": "https://juzaweb.com",
-    "require": {
-        "php": "^8.2"
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
     },
     "autoload": {
         "psr-4": {
-            "Juzaweb\\Modules\\Admin\\": "src/",
-            "Juzaweb\\Modules\\Admin\\Database\\Factories\\": "database/factories/"
+            "Modules\\Admin\\": "app/",
+            "Modules\\Admin\\Database\\Factories\\": "database/factories/",
+            "Modules\\Admin\\Database\\Seeders\\": "database/seeders/"
         }
     },
-    "minimum-stability": "dev",
-    "config": {
-        "sort-packages": true
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Admin\\Tests\\": "tests/"
+        }
     }
 }

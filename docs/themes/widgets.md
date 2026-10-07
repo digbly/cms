@@ -1,52 +1,26 @@
-# Widgets & Sidebars
+# Themes — Widgets
 
-Juzaweb CMS supports a widget system allowing themes to define sidebars and register custom widgets.
+A theme registers the sidebars widgets can be placed in and the widgets
+themselves, then renders them. Inertia themes receive a JSON payload resolved by
+`SidebarRenderer::payload()` and render each item by its `component` key:
 
-## Sidebars (`Sidebar`)
-
-The `Juzaweb\Modules\Core\Contracts\Sidebar` contract is used to register widget areas (sidebars) where users can drag and drop widgets.
-
-### Usage
-
-```php
-use Juzaweb\Modules\Core\Facades\Sidebar;
-
-// Register a sidebar
-Sidebar::make('sidebar', function () {
-    return [
-        'label' => 'Main Sidebar',
-        'description' => 'The main sidebar for blog posts.',
-    ];
-});
+```tsx
+// themes/<theme>/resources/views/components/WidgetRenderer.tsx
+switch (widget.component) {
+    case 'Widgets/RecentPosts':
+        return <RecentPosts {...widget.data} />;
+    default:
+        return null;
+}
 ```
 
-### Methods
+The bundled `default` theme ships `Widgets/Categories`, `Widgets/RecentPosts`
+and `Widgets/PopularPosts`, registered from its service provider.
 
-- `make(string $key, callable $callback)`: Register a sidebar. Callback must return an array.
-- `all()`: Get all registered sidebars.
+The backend registries (`Widget`, `Sidebar`, `ThemeSidebar`) and the renderer
+contract are documented in [Widgets & Sidebars](../the-basics/widgets.md).
 
-## Widgets (`Widget`)
+## See also
 
-The `Juzaweb\Modules\Core\Contracts\Widget` contract is used to register custom widgets available for use in sidebars.
-
-### Usage
-
-```php
-use Juzaweb\Modules\Core\Facades\Widget;
-
-// Register a custom widget
-Widget::make('recent_posts', function () {
-    return [
-        'label' => 'Recent Posts',
-        'description' => 'Display recent posts.',
-        'view' => 'theme::widgets.recent_posts.show',
-        'form' => 'theme::widgets.recent_posts.form',
-    ];
-});
-```
-
-### Methods
-
-- `make(string $key, callable $callback)`: Register a new widget. Callback must return an array.
-- `get(string $key)`: Get a specific widget.
-- `all()`: Get all registered widgets.
+- [Widgets & Sidebars](../the-basics/widgets.md)
+- [Templates & Blocks](templates.md)

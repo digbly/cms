@@ -1,91 +1,31 @@
-# Theme Commands
-
-## Management Commands
-
-### Make a Theme
-
-Create a new theme folder structure.
+# Themes — Theme Commands
 
 ```bash
-php artisan theme:make ThemeName
+php artisan theme:list                 # all themes + status
+php artisan theme:list --only=enabled  # filter by status
+php artisan theme:make blog            # scaffold themes/Blog + enable it
+php artisan theme:make blog --disabled # scaffold without enabling
+php artisan theme:make blog --force    # overwrite an existing theme
+php artisan theme:make blog --no-dump  # skip composer dump-autoload
+php artisan theme:enable Blog
+php artisan theme:disable Blog
+php artisan theme:publish              # copy every theme's resources/assets
+php artisan theme:publish Blog --force # clean + republish one theme
+php artisan theme:build default        # build a theme's Inertia front end (Vite)
+php artisan theme:build default --dev  # run the theme's Vite dev server
+php artisan theme:ssr default          # start the theme's Inertia SSR server
 ```
 
-**Options:**
-- `--title="My Theme"`: Set theme title.
-- `--description="Description"`: Set theme description.
-- `--author="Author Name"`: Set theme author.
-- `--ver="1.0"`: Set theme version.
+`theme:make` scaffolds a full Inertia (React) front end: `theme.json`,
+`composer.json`, `package.json`, `vite.config.js`, `tsconfig.json`,
+`app/Providers/ThemeServiceProvider.php`, `resources/views/theme.blade.php`,
+`resources/views/app.tsx`, a server-side-rendering entry
+`resources/views/ssr.tsx`, the client helpers (`lib/resolve-page.ts`,
+`lib/route.ts`), a `pages/Home.tsx`, `config/config.php`, `routes/web.php` and
+`resources/assets/css/app.css`. It then runs `composer dump-autoload` so the new
+theme's PSR-4 mapping is registered. Stubs live in `resources/stubs/themes`.
 
-### List Themes
+## See also
 
-List all available themes installed in the system.
-
-```bash
-php artisan theme:list
-```
-
-### Activate Theme
-
-Activate a specific theme.
-
-```bash
-php artisan theme:active ThemeName
-```
-
-### Publish Theme Assets
-
-Publish theme assets, views, or language files to the public/resource directories.
-
-```bash
-php artisan theme:publish ThemeName
-```
-
-**Arguments:**
-- `type` (optional): `assets` (default), `views`, `lang`.
-
-```bash
-php artisan theme:publish ThemeName assets
-php artisan theme:publish ThemeName views
-```
-
-### Seed Theme Data
-
-Run the `DatabaseSeeder` of a specific theme.
-
-```bash
-php artisan theme:seed ThemeName
-```
-
-## Generator Commands
-
-### Make Controller
-
-Create a new controller for a theme.
-
-```bash
-php artisan theme:make-controller ControllerName ThemeName
-```
-
-### Make View
-
-Create a new blade view file for a theme.
-
-```bash
-php artisan theme:make-view view-name ThemeName
-```
-
-### Make Template
-
-Create a new Page Template for a theme.
-
-```bash
-php artisan theme:make-template TemplateName ThemeName
-```
-
-### Make Page Block
-
-Create a new Page Block for a theme.
-
-```bash
-php artisan theme:make-block BlockName ThemeName
-```
+- [Asset Compilation](assets.md) · [Information](information.md)
+- [Modules — Commands](../modules/commands.md)

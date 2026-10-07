@@ -1,0 +1,65 @@
+{
+  "name": "darkaonline/l5-swagger",
+  "description": "OpenApi or Swagger integration to Laravel",
+  "keywords": [
+    "laravel",
+    "swagger",
+    "api",
+    "OpenApi",
+    "specification",
+    "documentation",
+    "API",
+    "UI"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Darius Matulionis",
+      "email": "darius@matulionis.lt"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "L5Swagger\\": "src"
+    },
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests"
+    }
+  },
+  "require": {
+    "php": "^8.2",
+    "laravel/framework": "^13.0 || ^12.1 || ^11.44",
+    "zircote/swagger-php": "^6.0",
+    "swagger-api/swagger-ui": ">=5.18.3",
+    "symfony/yaml": "^5.0 || ^6.0 || ^7.0 || ^8.0",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.0",
+    "mockery/mockery": "1.*",
+    "orchestra/testbench": "^11.0 || ^10.0 || ^9.0 || ^8.0 || 7.* || ^6.15 || 5.*",
+    "php-coveralls/php-coveralls": "^2.0",
+    "phpstan/phpstan": "^2.1"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "L5Swagger\\L5SwaggerServiceProvider"
+      ],
+      "aliases": {
+        "L5Swagger": "L5Swagger\\L5SwaggerFacade"
+      }
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "scripts": {
+    "phpunit": "vendor/bin/phpunit --testdox",
+    "analyse": "vendor/bin/phpstan analyse --memory-limit=256M"
+  }
+}

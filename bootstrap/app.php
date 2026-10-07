@@ -1,38 +1,32 @@
 <?php
 
+use App\Http\Middleware\HandleInertiaRequests;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Http\Request;
-use Juzaweb\Modules\Core\Application;
-use Juzaweb\Modules\Core\Http\Middleware\Authenticate;
-use Juzaweb\Modules\Core\Http\Middleware\Captcha;
-use Juzaweb\Modules\Core\Http\Middleware\EnsureEmailIsVerified;
-use Juzaweb\Modules\Core\Http\Middleware\ForceSchemeUrl;
-use Juzaweb\Modules\Core\Http\Middleware\ValidateSignature;
-use Laravel\Passport\Http\Middleware\CheckTokenForAnyScope;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
-    ->withMiddleware(
-        function (Middleware $middleware) {
-            $middleware->redirectGuestsTo(
-                fn (Request $request) => route('login', ['redirect' => $request->fullUrl()])
-            );
-
-            $middleware->alias([
-                'auth' => Authenticate::class,
-                'verified' => EnsureEmailIsVerified::class,
-                'captcha' => Captcha::class,
-                'signed' => ValidateSignature::class,
-                'scope' => CheckTokenForAnyScope::class,
-            ]);
-
-            if (! env('VERIFY_TOKEN', true)) {
-                $middleware->validateCsrfTokens(except: ['*']);
-            }
-
-            $middleware->append(ForceSchemeUrl::class);
-        }
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
     )
-    ->withExceptions(function (Exceptions $exceptions) {
+    ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->alias([
+            'role' => RoleMiddleware::class,
+            'permission' => PermissionMiddleware::class,
+            'role_or_permission' => RoleOrPermissionMiddleware::class,
+        ]);
+
+        $middleware->web(append: [
+            AuthenticateSession::class,
+            HandleInertiaRequests::class,
+        ]);
+    })
+    ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

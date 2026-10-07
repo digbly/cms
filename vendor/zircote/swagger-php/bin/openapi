@@ -1,0 +1,46 @@
+#!/usr/bin/env php
+<?php
+
+use OpenApi\Console\GenerateCommand;
+use OpenApi\Undefined;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Logger\ConsoleLogger;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+if (class_exists(Undefined::class) === false) {
+    if (file_exists(__DIR__.'/../vendor/autoload.php')) {  // cloned / dev environment?
+        require_once(__DIR__.'/../vendor/autoload.php');
+    } else {
+        require_once(realpath(__DIR__.'/../../../').'/autoload.php');
+    }
+}
+
+$input = new class extends ArgvInput
+{
+    public function hasParameterOption(array|string $values, bool $onlyParams = false): bool
+    {
+        // Skip the built-in version option check
+        // thus the command can use it for its own purpose
+        if (['--version', '-V'] === $values) {
+            return false;
+        }
+
+        return parent::hasParameterOption($values, $onlyParams);
+    }
+};
+$output = new ConsoleOutput();
+$logger = new ConsoleLogger($output);
+$app = new Application();
+
+// Remove Symfony's built-in options that conflict with our command options:
+// --version (-V): conflicts with our --version (VALUE_REQUIRED for OpenAPI spec version)
+// --no-interaction (-n): conflicts with our --pattern (-n)
+$definition = $app->getDefinition();
+$options = $definition->getOptions();
+unset($options['version'], $options['no-interaction']);
+$definition->setOptions($options);
+
+$app->addCommand(new GenerateCommand($logger));
+$app->setDefaultCommand('openapi', true);
+$app->run($input, $output);

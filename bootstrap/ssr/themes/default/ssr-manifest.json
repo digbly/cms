@@ -1,0 +1,59 @@
+{
+  "resources/views/components/BlockRenderer.tsx": [
+    "/themes/default/assets/Home-DEcDoq4x.js"
+  ],
+  "resources/views/components/Pagination.tsx": [
+    "/themes/default/assets/Pagination-Eg4dKc_s.js"
+  ],
+  "resources/views/components/PostCard.tsx": [
+    "/themes/default/assets/PostCard-BJtU7kGV.js"
+  ],
+  "resources/views/components/Sidebar.tsx": [
+    "/themes/default/assets/AppLayout-_et35-Ng.js"
+  ],
+  "resources/views/components/WidgetRenderer.tsx": [
+    "/themes/default/assets/AppLayout-_et35-Ng.js"
+  ],
+  "resources/views/components/blocks/Hero.tsx": [
+    "/themes/default/assets/Home-DEcDoq4x.js"
+  ],
+  "resources/views/components/blocks/Posts.tsx": [
+    "/themes/default/assets/Home-DEcDoq4x.js"
+  ],
+  "resources/views/components/comments/CommentForm.tsx": [
+    "/themes/default/assets/Post-BN8g9d_L.js"
+  ],
+  "resources/views/components/comments/CommentList.tsx": [
+    "/themes/default/assets/Post-BN8g9d_L.js"
+  ],
+  "resources/views/components/widgets/Categories.tsx": [
+    "/themes/default/assets/AppLayout-_et35-Ng.js"
+  ],
+  "resources/views/components/widgets/PopularPosts.tsx": [
+    "/themes/default/assets/AppLayout-_et35-Ng.js"
+  ],
+  "resources/views/components/widgets/RecentPosts.tsx": [
+    "/themes/default/assets/AppLayout-_et35-Ng.js"
+  ],
+  "resources/views/layouts/AppLayout.tsx": [
+    "/themes/default/assets/AppLayout-_et35-Ng.js"
+  ],
+  "resources/views/lib/resolve-page.ts": [],
+  "resources/views/lib/route.ts": [],
+  "resources/views/pages/Category.tsx": [
+    "/themes/default/assets/Category-oWxLOXht.js"
+  ],
+  "resources/views/pages/Home.tsx": [
+    "/themes/default/assets/Home-DEcDoq4x.js"
+  ],
+  "resources/views/pages/NotFound.tsx": [
+    "/themes/default/assets/NotFound-BpCUMJ-m.js"
+  ],
+  "resources/views/pages/Post.tsx": [
+    "/themes/default/assets/Post-BN8g9d_L.js"
+  ],
+  "resources/views/pages/Search.tsx": [
+    "/themes/default/assets/Search-D349S3D5.js"
+  ],
+  "resources/views/ssr.tsx": []
+}

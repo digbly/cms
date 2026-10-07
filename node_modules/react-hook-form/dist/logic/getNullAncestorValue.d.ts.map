@@ -1,0 +1,1 @@
+{"version":3,"file":"getNullAncestorValue.d.ts","sourceRoot":"","sources":["../../src/logic/getNullAncestorValue.ts"],"names":[],"mappings":"AAEA,MAAM,CAAC,OAAO,UAAU,oBAAoB,CAC1C,OAAO,EAAE;IAAE,WAAW,EAAE,OAAO,CAAC;IAAC,cAAc,EAAE,OAAO,CAAA;CAAE,EAC1D,IAAI,EAAE,MAAM,oBAiBb"}

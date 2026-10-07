@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "jsx": "react-jsx",
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "allowJs": true,
+        "noEmit": true,
+        "isolatedModules": true,
+        "resolveJsonModule": true,
+        "types": ["vite/client"],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["resources/views/*"],
+            "@modules/*": ["modules/*"]
+        }
+    },
+    "include": [
+        "resources/views/**/*.ts",
+        "resources/views/**/*.tsx",
+        "modules/**/resources/views/**/*.tsx",
+        "modules/**/resources/views/**/*.ts"
+    ]
+}

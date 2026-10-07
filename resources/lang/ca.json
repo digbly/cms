@@ -1,7 +1,0 @@
-{
-    "The :attribute must contain at least one letter.": "L':attribute ha de contenir almenys una lletra.",
-    "The :attribute must contain at least one number.": "L':attribute ha de contenir almenys un número.",
-    "The :attribute must contain at least one symbol.": "L':attribute ha de contenir almenys un símbol.",
-    "The :attribute must contain at least one uppercase and one lowercase letter.": "L':attribute ha de contenir almenys una lletra majúscula i una minúscula.",
-    "The given :attribute has appeared in a data leak. Please choose a different :attribute.": "L':attribute donat ha aparegut en una filtració de dades. Si us plau, trieu un :attribute diferent."
-}

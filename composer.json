@@ -1,58 +1,46 @@
 {
-    "name": "juzaweb/cms",
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "laravel/laravel",
     "type": "project",
-    "homepage": "https://juzaweb.com",
-    "description": "Juzaweb CMS is a Content Management System (CMS) developed based on Laravel Framework and web platform whose sole purpose is to make your development workflow simple again. Project develop by Juzaweb",
-    "keywords": [
-        "framework",
-        "laravel",
-        "laravel cms",
-        "laravel cms like wordpress",
-        "cms like wordpress",
-        "juzaweb",
-        "juzacms"
-    ],
+    "description": "The skeleton application for the Laravel framework.",
+    "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "ext-curl": "*",
-        "ext-dom": "*",
-        "ext-fileinfo": "*",
-        "ext-json": "*",
-        "ext-libxml": "*",
-        "ext-openssl": "*",
-        "ext-pdo": "*",
-        "ext-simplexml": "*",
-        "ext-xmlwriter": "*",
-        "ext-zip": "*",
-        "composer/installers": "^2.3",
-        "firebase/php-jwt": "^6.0",
-        "juzaweb/admin": "@dev",
-        "juzaweb/api": "^1.0",
-        "juzaweb/blog": "^1.0",
-        "juzaweb/core": "^5.0",
-        "juzaweb/installer": "^1.0",
-        "laravel/framework": "^11.31",
-        "laravel/passport": "^13.6",
-        "laravel/tinker": "^2.9",
-        "opcodesio/log-viewer": "^3.21",
-        "symfony/cache": "^6.0"
+        "astrotomic/laravel-translatable": "^11.17",
+        "darkaonline/l5-swagger": "^11.1",
+        "doctrine/dbal": "^4.4",
+        "inertiajs/inertia-laravel": "^2.0",
+        "laravel/framework": "^12.0",
+        "laravel/passport": "^13.7",
+        "laravel/socialite": "^5.29",
+        "laravel/tinker": "^2.10.1",
+        "nwidart/laravel-modules": "^12.0",
+        "spatie/laravel-activitylog": "^4.12",
+        "spatie/laravel-medialibrary": "^11.23",
+        "spatie/laravel-permission": "^6.25",
+        "spatie/laravel-sitemap": "^8.0",
+        "spatie/laravel-translation-loader": "^2.8",
+        "wikimedia/composer-merge-plugin": "^2.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "juzaweb/dev-tool": "^2.0",
-        "laravel/pail": "^1.1",
-        "laravel/pint": "^1.13",
-        "laravel/sail": "^1.26",
+        "laravel/pail": "^1.2.2",
+        "laravel/pint": "^1.24",
+        "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.1",
-        "phpunit/phpunit": "^11.0.1"
+        "nunomaduro/collision": "^8.6",
+        "phpunit/phpunit": "^11.5.50"
     },
     "autoload": {
         "psr-4": {
             "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Support/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -60,12 +48,26 @@
         }
     },
     "scripts": {
+        "setup": [
+            "composer install",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan key:generate",
+            "@php artisan migrate --force"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1 --timeout=0\" \"npm run dev\" --names=server,queue,vite --kill-others"
+        ],
+        "test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
-            "@php artisan core:publish --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -75,37 +77,33 @@
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
         ],
-        "dev": [
-            "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
         ]
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "nwidart/laravel-modules"
+            ]
         },
-        "installer-types": ["juzaweb-module", "juzaweb-theme"]
+        "merge-plugin": {
+            "include": [
+                "modules/*/composer.json",
+                "themes/*/composer.json"
+            ]
+        }
     },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "composer/installers": true,
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "wikimedia/composer-merge-plugin": true
         }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "repositories": [
-        {
-            "type": "path",
-            "url": "./modules/*"
-        },
-        {
-            "type": "path",
-            "url": "./themes/*"
-        }
-    ]
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }

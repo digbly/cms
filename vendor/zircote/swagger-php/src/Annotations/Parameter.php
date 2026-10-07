@@ -1,0 +1,302 @@
+<?php declare(strict_types=1);
+
+/**
+ * @license Apache 2.0
+ */
+
+namespace OpenApi\Annotations;
+
+use OpenApi\Analysis;
+use OpenApi\Undefined;
+
+/**
+ * Describes a single operation parameter.
+ *
+ * A unique parameter is defined by a combination of a name and location.
+ *
+ * @see [Parameter Object](https://spec.openapis.org/oas/v3.1.1.html#parameter-object)
+ *
+ * @Annotation
+ */
+class Parameter extends AbstractAnnotation
+{
+    /**
+     * The relative or absolute path to the endpoint.
+     *
+     * @see [Reference Object](https://spec.openapis.org/oas/v3.1.1.html#reference-object)
+     *
+     * @var string|class-string|object
+     */
+    public $ref = Undefined::UNDEFINED;
+
+    /**
+     * The key into <code>Components::parameters</code> or <code>PathItem::parameters</code> array.
+     *
+     * @var string
+     */
+    public $parameter = Undefined::UNDEFINED;
+
+    /**
+     * The (case-sensitive) name of the parameter.
+     *
+     * If in is "path", the name field must correspond to the associated path segment from the path field in the Paths Object.
+     *
+     * If in is "header" and the name field is "Accept", "Content-Type" or "Authorization", the parameter definition shall be ignored.
+     * For all other cases, the name corresponds to the parameter name used by the in property.
+     *
+     * @var string
+     */
+    public $name = Undefined::UNDEFINED;
+
+    /**
+     * The location of the parameter.
+     *
+     * Possible values are "query", "header", "path" or "cookie".
+     *
+     * @var string
+     */
+    public $in = Undefined::UNDEFINED;
+
+    /**
+     * A brief description of the parameter.
+     *
+     * This could contain examples of use.
+     *
+     * CommonMark syntax may be used for rich text representation.
+     *
+     * @var string
+     */
+    public $description = Undefined::UNDEFINED;
+
+    /**
+     * Determines whether this parameter is mandatory.
+     *
+     * If the parameter location is "path", this property is required and its value must be true.
+     * Otherwise, the property may be included and its default value is false.
+     *
+     * @var bool
+     */
+    public $required = Undefined::UNDEFINED;
+
+    /**
+     * Specifies that a parameter is deprecated and should be transitioned out of usage.
+     *
+     * @var bool
+     */
+    public $deprecated = Undefined::UNDEFINED;
+
+    /**
+     * Sets the ability to pass empty-valued parameters.
+     *
+     * This is valid only for query parameters and allows sending a parameter with an empty value.
+     *
+     * Default value is false.
+     *
+     * If style is used, and if behavior is n/a (cannot be serialized), the value of allowEmptyValue shall be ignored.
+     *
+     * @var bool
+     */
+    public $allowEmptyValue = Undefined::UNDEFINED;
+
+    /**
+     * Describes how the parameter value will be serialized depending on the type of the parameter value.
+     *
+     * Default values (based on value of in): for query - form; for path - simple; for header - simple; for cookie - form.
+     *
+     * @var string
+     */
+    public $style = Undefined::UNDEFINED;
+
+    /**
+     * When this is true, parameter values of type array or object generate separate parameters for each value of the array or key-value pair of the map.
+     *
+     * For other types of parameters this property has no effect.
+     *
+     * When style is form, the default value is true.
+     * For all other styles, the default value is false.
+     *
+     * @var bool
+     */
+    public $explode = Undefined::UNDEFINED;
+
+    /**
+     * Determines whether the parameter value should allow reserved characters, as defined by RFC3986 :/?#[]@!$&'()*+,;= to be included without percent-encoding.
+     *
+     * This property only applies to parameters with an in value of query.
+     *
+     * The default value is false.
+     *
+     * @var bool
+     */
+    public $allowReserved = Undefined::UNDEFINED;
+
+    /**
+     * The schema defining the type used for the parameter.
+     *
+     * @var Schema
+     */
+    public $schema = Undefined::UNDEFINED;
+
+    /**
+     * Example of the media type.
+     *
+     * The example should match the specified schema and encoding properties if present.
+     * The example object is mutually exclusive of the examples object.
+     * Furthermore, if referencing a schema which contains an example, the example value shall override the example provided by the schema.
+     * To represent examples of media types that cannot naturally be represented in JSON or YAML, a string value can contain the example with escaping where necessary.
+     *
+     * @var mixed
+     */
+    public $example = Undefined::UNDEFINED;
+
+    /**
+     * Examples of the parameter.
+     *
+     * Each example should contain a value in the correct format as specified in the parameter encoding.
+     * The examples object is mutually exclusive of the example object.
+     * Furthermore, if referencing a schema which contains an example, the examples value shall override the example provided by the schema.
+     *
+     * @var array<Examples>
+     */
+    public $examples = Undefined::UNDEFINED;
+
+    /**
+     * A map containing the representations for the parameter.
+     *
+     * The key is the media type and the value describes it.
+     * The map must only contain one entry.
+     *
+     * @var array<MediaType>|JsonContent|XmlContent|Attachable
+     */
+    public $content = Undefined::UNDEFINED;
+
+    /**
+     * Path-style parameters defined by RFC6570.
+     *
+     * @see [RFC6570](https://tools.ietf.org/html/rfc6570#section-3.2.7)
+     *
+     * @var string
+     */
+    public $matrix = Undefined::UNDEFINED;
+
+    /**
+     * Label style parameters defined by RFC6570.
+     *
+     * @see [RFC6570](https://tools.ietf.org/html/rfc6570#section-3.2.5)
+     *
+     * @var string
+     */
+    public $label = Undefined::UNDEFINED;
+
+    /**
+     * Form style parameters defined by RFC6570.
+     *
+     * This option replaces collectionFormat with a csv (when explode is false) or multi (when explode is true) value from OpenAPI 2.0.
+     *
+     * @see [RFC6570](https://tools.ietf.org/html/rfc6570#section-3.2.8)
+     *
+     * @var mixed
+     */
+    public $form = Undefined::UNDEFINED;
+
+    /**
+     * Simple style parameters defined by RFC6570.
+     *
+     * This option replaces collectionFormat with a csv value from OpenAPI 2.0.
+     *
+     * @see [RFC6570](https://tools.ietf.org/html/rfc6570#section-3.2.2)
+     *
+     * @var array
+     */
+    public $simple = Undefined::UNDEFINED;
+
+    /**
+     * Space separated array values.
+     *
+     * This option replaces collectionFormat equal to ssv from OpenAPI 2.0.
+     *
+     * @var array
+     */
+    public $spaceDelimited = Undefined::UNDEFINED;
+
+    /**
+     * Pipe separated array values.
+     *
+     * This option replaces collectionFormat equal to pipes from OpenAPI 2.0.
+     *
+     * @var array
+     */
+    public $pipeDelimited = Undefined::UNDEFINED;
+
+    /**
+     * Provides a simple way of rendering nested objects using form parameters.
+     *
+     * @var mixed
+     */
+    public $deepObject = Undefined::UNDEFINED;
+
+    /**
+     * @inheritdoc
+     */
+    public static $_required = ['name', 'in'];
+
+    /**
+     * @inheritdoc
+     */
+    public static $_types = [
+        'name' => 'string',
+        'in' => ['query', 'header', 'path', 'cookie'],
+        'description' => 'string',
+        'style' => ['matrix', 'label', 'form', 'simple', 'spaceDelimited', 'pipeDelimited', 'deepObject'],
+        'required' => 'boolean',
+    ];
+
+    /**
+     * @inheritdoc
+     */
+    public static $_nested = [
+        Schema::class => 'schema',
+        Examples::class => ['examples', 'example'],
+        Attachable::class => ['attachables'],
+    ];
+
+    /**
+     * @inheritdoc
+     */
+    public static $_parents = [
+        Components::class,
+        PathItem::class,
+        Operation::class,
+        Get::class,
+        Post::class,
+        Put::class,
+        Delete::class,
+        Patch::class,
+        Head::class,
+        Options::class,
+        Trace::class,
+    ];
+
+    #[\Override]
+    public function validate(?Analysis $analysis = null, string $version = OpenApi::DEFAULT_VERSION, ?object $context = null): bool
+    {
+        $isValid = parent::validate($analysis, $version, $context);
+
+        if (Undefined::isDefault($this->ref)) {
+            if ($this->in === 'body') {
+                if (Undefined::isDefault($this->schema)) {
+                    $this->_context->logger->warning('Field "schema" is required when ' . $this->identity() . ' is in "' . $this->in . '" in ' . $this->_context);
+                    $isValid = false;
+                }
+            }
+        }
+
+        return $isValid;
+    }
+
+    #[\Override]
+    public function identity(?array $properties = []): string
+    {
+        return parent::identity(['name', 'in']);
+    }
+}

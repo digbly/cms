@@ -1,0 +1,1 @@
+import{j as d}from"./app-D_SwDnGp.js";function o({className:r="",children:a,...s}){return d.jsx("div",{className:`rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 dark:border-white/10 dark:bg-slate-900/60 dark:shadow-black/20 ${r}`,...s,children:a})}export{o as C};

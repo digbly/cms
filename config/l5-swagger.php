@@ -1,5 +1,6 @@
 <?php
 
+use L5Swagger\CustomGeneratorInterface;
 use L5Swagger\Generator;
 use OpenApi\scan;
 
@@ -47,9 +48,8 @@ return [
                  * Absolute paths to directory containing the swagger annotations are stored.
                  */
                 'annotations' => [
-                    base_path('vendor/juzaweb/core/src'),
-                    base_path('vendor/juzaweb/api/src'),
-                    base_path('modules/admin/src'),
+                    base_path('app'),
+                    base_path('modules'),
                 ],
             ],
         ],
@@ -59,12 +59,12 @@ return [
             /*
              * Route for accessing parsed swagger annotations.
              */
-            'docs' => 'api/docs',
+            'docs' => 'docs',
 
             /*
              * Route for Oauth2 authentication callback.
              */
-            'oauth2_callback' => 'callback',
+            'oauth2_callback' => 'api/oauth2-callback',
 
             /*
              * Middleware allows to prevent unexpected access to API documentation
@@ -108,6 +108,15 @@ return [
 
         'scanOptions' => [
             /**
+             * Optional CustomGeneratorInterface implementation that creates an OpenApi\Generator instance.
+             * Use this to provide a custom pre-configured generator.
+             * Accepts an instance or a class name (FQCN) implementing the interface.
+             *
+             * @see CustomGeneratorInterface
+             */
+            'generator_factory' => null,
+
+            /**
              * Configuration for default processors. Allows to pass processors configuration to swagger-php.
              *
              * @link https://zircote.github.io/swagger-php/reference/processors.html
@@ -140,13 +149,19 @@ return [
             'analysis' => null,
 
             /**
-             * Custom query path processors classes.
+             * Custom processors.
+             *
+             * Each entry can be:
+             * - A class name or instance (inserted after BuildPaths by default)
+             * - An array with 'class' and 'after' keys for precise positioning:
+             *   ['class' => MyProcessor::class, 'after' => SomeProcessor::class]
              *
              * @link https://github.com/zircote/swagger-php/tree/master/Examples/processors/schema-query-parameter
              * @see scan
              */
             'processors' => [
-                // new \App\SwaggerProcessors\SchemaQueryParameter(),
+                // \App\SwaggerProcessors\SchemaQueryParameter::class,
+                // ['class' => \App\SwaggerProcessors\Custom::class, 'after' => \OpenApi\Processors\AugmentSchemas::class],
             ],
 
             /**
@@ -220,28 +235,6 @@ return [
                     'in' => 'header', // The location of the API key. Valid values are "query" or "header".
                 ],
                 */
-
-                'bearerAuth' => [ // Unique name of security
-                    'type' => 'oauth2', // The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
-                    'description' => 'Laravel passport oauth2 security.',
-                    'in' => 'header',
-                    'scheme' => 'https',
-                    'flows' => [
-                        'authorizationCode' => [
-                            'authorizationUrl' => config('app.url').'/oauth/authorize',
-                            'tokenUrl' => config('app.url').'/oauth/token',
-                            'refreshUrl' => config('app.url').'/oauth/token/refresh',
-                            'scopes' => [],
-                        ],
-                    ],
-                ],
-
-                'apiKey' => [ // Unique name of security
-                    'type' => 'apiKey', // The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
-                    'description' => 'A short description for security scheme',
-                    'name' => 'x-api-key', // The name of the header or query parameter to be used.
-                    'in' => 'header', // The location of the API key. Valid values are "query" or "header".
-                ],
             ],
             'security' => [
                 /*
@@ -325,7 +318,7 @@ return [
                 /*
                  * If set to true, it persists authorization data, and it would not be lost on browser close/refresh
                  */
-                'persist_authorization' => env('L5_SWAGGER_UI_PERSIST_AUTHORIZATION', true),
+                'persist_authorization' => env('L5_SWAGGER_UI_PERSIST_AUTHORIZATION', false),
 
                 'oauth2' => [
                     /*

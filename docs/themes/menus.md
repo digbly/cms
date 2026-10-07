@@ -1,48 +1,28 @@
-# Menus and Navigation
+# Themes — Nav Menus
 
-Juzaweb CMS provides contracts to manage menus in both the Admin Panel and the Frontend.
+Navigation menus are edited in the admin and assigned to **locations** the theme
+defines (for example `primary`, `footer`). The active assignment is stored in the
+application setting `nav_location` (`location => menu id`).
 
-## Navigation Menu (`NavMenu`)
-
-The `Juzaweb\Modules\Core\Contracts\NavMenu` contract manages frontend navigation menu locations (e.g., Primary Menu, Footer Menu).
-
-### Usage
-
-```php
-use Juzaweb\Modules\Core\Facades\NavMenu;
-
-// Register a navigation menu location
-NavMenu::make('primary', function () {
-    return [
-        'label' => 'Primary Menu',
-    ];
-});
-```
-
-### Methods
-
-- `make(string $key, callable $callback)`: Register a nav menu location. Callback must return an array.
-- `get(string $key)`: Get a specific nav menu.
-- `all()`: Get all registered nav menus.
-
-## Menu Box (`MenuBox`)
-
-The `Juzaweb\Modules\Core\Contracts\MenuBox` contract allows registering custom boxes for the Menu Editor in the Admin Panel (e.g., adding "Categories" or "Custom Links" to the menu builder).
-
-### Usage
+The theme reads the assigned menu and renders its resolved tree. Fetch the menu
+with its nested, translated, linkable items:
 
 ```php
-use Juzaweb\Modules\Core\Facades\MenuBox;
+use App\Models\Menus\Menu;
+use App\Facades\Setting;
 
-MenuBox::make('custom_link', 'CustomLinkClass', function () {
-    return [
-        'title' => 'Custom Links',
-    ];
-});
+$menuId = Setting::get('nav_location')['primary'] ?? null;
+$menu = $menuId ? Menu::withDataItems()->find($menuId) : null;
 ```
 
-### Methods
+`MenuItem::getUrl()` resolves the destination for custom links and model-backed
+items alike; linkable models expose a `getUrl()` method for this purpose.
 
-- `make(string $key, string $class, callable $options)`: Register a menu box. Options callback must return an array.
-- `get(string $position)`: Get menu boxes by position.
-- `all()`: Get all registered menu boxes.
+The full model — locations (`NavMenu`), content sources (`MenuBox`), menu items
+and the admin builder — is documented in
+[Navigation Menus](../the-basics/navigation-menus.md).
+
+## See also
+
+- [Navigation Menus](../the-basics/navigation-menus.md)
+- [Templates & Blocks](templates.md)

@@ -1,0 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+const pages = import.meta.glob<any>('../pages/**/*.{tsx,jsx}');
+
+/**
+ * Resolve an Inertia page component for the theme.
+ *
+ * "Home" -> resources/js/pages/Home.tsx
+ */
+export function resolvePage(name: string): Promise<any> {
+    const normalized = name.replace(/\./g, '/');
+    const tsx = `../pages/${normalized}.tsx`;
+    const jsx = `../pages/${normalized}.jsx`;
+
+    if (pages[tsx]) {
+        return pages[tsx]();
+    }
+
+    if (pages[jsx]) {
+        return pages[jsx]();
+    }
+
+    throw new Error(`Inertia page not found for "${name}" (pages/${normalized}.tsx)`);
+}
+
+export default resolvePage;

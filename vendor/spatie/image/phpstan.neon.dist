@@ -1,0 +1,14 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 9
+    paths:
+        - src/
+
+    excludePaths:
+        analyse:
+            - src/Drivers/Vips/*
+
+    ignoreErrors:
+        - '#Unsafe usage of new static#'

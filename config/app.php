@@ -1,29 +1,5 @@
 <?php
 
-use Illuminate\Auth\AuthServiceProvider;
-use Illuminate\Auth\Passwords\PasswordResetServiceProvider;
-use Illuminate\Broadcasting\BroadcastServiceProvider;
-use Illuminate\Bus\BusServiceProvider;
-use Illuminate\Cache\CacheServiceProvider;
-use Illuminate\Cookie\CookieServiceProvider;
-use Illuminate\Database\DatabaseServiceProvider;
-use Illuminate\Encryption\EncryptionServiceProvider;
-use Illuminate\Filesystem\FilesystemServiceProvider;
-use Illuminate\Foundation\Providers\ConsoleSupportServiceProvider;
-use Illuminate\Foundation\Providers\FoundationServiceProvider;
-use Illuminate\Hashing\HashServiceProvider;
-use Illuminate\Mail\MailServiceProvider;
-use Illuminate\Notifications\NotificationServiceProvider;
-use Illuminate\Pagination\PaginationServiceProvider;
-use Illuminate\Pipeline\PipelineServiceProvider;
-use Illuminate\Queue\QueueServiceProvider;
-use Illuminate\Redis\RedisServiceProvider;
-use Illuminate\Session\SessionServiceProvider;
-use Illuminate\Support\Facades\Facade;
-use Illuminate\Validation\ValidationServiceProvider;
-use Illuminate\View\ViewServiceProvider;
-use Spatie\TranslationLoader\TranslationServiceProvider;
-
 return [
 
     /*
@@ -37,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Juzaweb'),
+    'name' => env('APP_NAME', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------
@@ -78,8 +54,6 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    'mix_url' => env('MIX_ASSET_URL'),
-
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -91,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => env('APP_TIMEZONE', 'UTC'),
+    'timezone' => 'UTC',
 
     /*
     |--------------------------------------------------------------------------
@@ -112,18 +86,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Token Verification
+    | Admin URL Prefix
     |--------------------------------------------------------------------------
     |
-    | This option controls whether token verification is enabled for API
-    | requests. When enabled, requests must include a valid jw-token.
-    | You can disable this for development or testing purposes.
-    |
-    | Default: true
+    | The URL segment used as the prefix for generated admin URLs.
     |
     */
 
-    'verify_token' => (bool) env('VERIFY_TOKEN', true),
+    'admin_prefix' => env('ADMIN_PREFIX', 'admin'),
 
     /*
     |--------------------------------------------------------------------------
@@ -142,7 +112,7 @@ return [
 
     'previous_keys' => [
         ...array_filter(
-            explode(',', env('APP_PREVIOUS_KEYS', ''))
+            explode(',', (string) env('APP_PREVIOUS_KEYS', ''))
         ),
     ],
 
@@ -163,41 +133,5 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
-
-    'providers' => [
-
-        /*
-         * Laravel Framework Service Providers...
-         */
-        AuthServiceProvider::class,
-        BroadcastServiceProvider::class,
-        BusServiceProvider::class,
-        CacheServiceProvider::class,
-        ConsoleSupportServiceProvider::class,
-        CookieServiceProvider::class,
-        DatabaseServiceProvider::class,
-        EncryptionServiceProvider::class,
-        FilesystemServiceProvider::class,
-        FoundationServiceProvider::class,
-        HashServiceProvider::class,
-        MailServiceProvider::class,
-        NotificationServiceProvider::class,
-        PaginationServiceProvider::class,
-        PipelineServiceProvider::class,
-        QueueServiceProvider::class,
-        RedisServiceProvider::class,
-        PasswordResetServiceProvider::class,
-        SessionServiceProvider::class,
-        TranslationServiceProvider::class,
-        ValidationServiceProvider::class,
-        ViewServiceProvider::class,
-        // App Service Providers
-    ],
-
-    'aliases' => Facade::defaultAliases()->merge(
-        [
-            //
-        ]
-    )->toArray(),
 
 ];

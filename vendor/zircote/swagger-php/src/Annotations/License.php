@@ -1,0 +1,98 @@
+<?php declare(strict_types=1);
+
+/**
+ * @license Apache 2.0
+ */
+
+namespace OpenApi\Annotations;
+
+use OpenApi\Analysis;
+use OpenApi\Undefined;
+
+/**
+ * License information for the exposed API.
+ *
+ * @see [License Object](https://spec.openapis.org/oas/v3.1.1.html#license-object)
+ *
+ * @Annotation
+ */
+class License extends AbstractAnnotation
+{
+    /**
+     * The license name used for the API.
+     *
+     * @var string
+     */
+    public $name = Undefined::UNDEFINED;
+
+    /**
+     * An SPDX license expression for the API. The <code>identifier</code> field is mutually exclusive of the <code>url</code> field.
+     *
+     * @since OpenAPI 3.1.0
+     * @var string
+     */
+    public $identifier = Undefined::UNDEFINED;
+
+    /**
+     * A URL to the license used for the API. This MUST be in the form of a URL.
+     *
+     * The <code>url</code> field is mutually exclusive of the <code>identifier</code> field.
+     *
+     * @var string
+     */
+    public $url = Undefined::UNDEFINED;
+
+    /**
+     * @inheritdoc
+     */
+    public static $_types = [
+        'name' => 'string',
+        'identifier' => 'string',
+        'url' => 'string',
+    ];
+
+    /**
+     * @inheritdoc
+     */
+    public static $_required = ['name'];
+
+    /**
+     * @inheritdoc
+     */
+    public static $_parents = [
+        Info::class,
+    ];
+
+    /**
+     * @inheritdoc
+     */
+    public static $_nested = [
+        Attachable::class => ['attachables'],
+    ];
+
+    public function jsonSerialize(): \stdClass
+    {
+        $data = parent::jsonSerialize();
+
+        if ($this->_context->isVersion('3.0.x')) {
+            unset($data->identifier);
+        }
+
+        return $data;
+    }
+
+    #[\Override]
+    public function validate(?Analysis $analysis = null, string $version = OpenApi::DEFAULT_VERSION, ?object $context = null): bool
+    {
+        $isValid = parent::validate($analysis, $version, $context);
+
+        if (!OpenApi::versionMatch($version, '3.0.x')) {
+            if (!Undefined::isDefault($this->url) && !Undefined::isDefault($this->identifier)) {
+                $this->_context->logger->warning($this->identity() . ' url and identifier are mutually exclusive in ' . $this->_context);
+                $isValid = false;
+            }
+        }
+
+        return $isValid;
+    }
+}

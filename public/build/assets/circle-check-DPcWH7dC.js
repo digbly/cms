@@ -1,0 +1,1 @@
+import{c as e}from"./createLucideIcon-J3vlsggn.js";const c={name:"circle-check",size:24,node:[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"m16 9-5.5 5.5L8 12",key:"xofnsj"}]],aliases:["check-circle-2"]};c.node;const o=e(c);export{o as C};

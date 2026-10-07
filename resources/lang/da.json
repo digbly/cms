@@ -1,7 +1,0 @@
-{
-    "The :attribute must contain at least one letter.": ":attribute skal indeholde mindst ét bogstav.",
-    "The :attribute must contain at least one number.": ":attribute skal indeholde mindst ét tal.",
-    "The :attribute must contain at least one symbol.": ":attribute skal indeholde mindst ét symbol.",
-    "The :attribute must contain at least one uppercase and one lowercase letter.": ":attribute skal indeholde mindst ét stort og ét lille bogstav.",
-    "The given :attribute has appeared in a data leak. Please choose a different :attribute.": "Den angivne :attribute er fundet i en datalækage. Vælg venligst en anden :attribute."
-}

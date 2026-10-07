@@ -1,0 +1,11 @@
+{
+  "name": "swagger-php-tools",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "scripts": {
+    "redocly": "redocly"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^2.37.0"
+  }
+}

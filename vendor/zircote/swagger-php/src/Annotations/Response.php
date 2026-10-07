@@ -1,0 +1,129 @@
+<?php declare(strict_types=1);
+
+/**
+ * @license Apache 2.0
+ */
+
+namespace OpenApi\Annotations;
+
+use OpenApi\Analysis;
+use OpenApi\Undefined;
+
+/**
+ * Describes a single response from an API Operation, including design-time,
+ * static links to operations based on the response.
+ *
+ * @see [Response Object](https://spec.openapis.org/oas/v3.1.1.html#response-object)
+ *
+ * @Annotation
+ */
+class Response extends AbstractAnnotation
+{
+    /**
+     * The relative or absolute path to a response.
+     *
+     * @see [Reference Object](https://spec.openapis.org/oas/v3.1.1.html#reference-object)
+     *
+     * @var string|class-string|object
+     */
+    public $ref = Undefined::UNDEFINED;
+
+    /**
+     * The key into Operations->responses array.
+     *
+     * A HTTP status code or <code>default</code>.
+     *
+     * @var string|int
+     */
+    public $response = Undefined::UNDEFINED;
+
+    /**
+     * A short description of the response.
+     *
+     * CommonMark syntax may be used for rich text representation.
+     *
+     * @var string
+     */
+    public $description = Undefined::UNDEFINED;
+
+    /**
+     * Maps a header name to its definition.
+     *
+     * RFC7230 states header names are case-insensitive.
+     *
+     * If a response header is defined with the name "Content-Type", it shall be ignored.
+     *
+     * @see [RFC7230](https://tools.ietf.org/html/rfc7230#page-22)
+     *
+     * @var list<Header>
+     */
+    public $headers = Undefined::UNDEFINED;
+
+    /**
+     * A map containing descriptions of potential response payloads.
+     *
+     * The key is a media type or media type range and the value describes it.
+     *
+     * For responses that match multiple keys, only the most specific key is applicable;
+     * e.g. <code>text/plain</code> overrides <code>text/*</code>.
+     *
+     * @var MediaType|JsonContent|XmlContent|Attachable|array<MediaType|JsonContent|XmlContent|Attachable>
+     */
+    public $content = Undefined::UNDEFINED;
+
+    /**
+     * A map of operations links that can be followed from the response.
+     *
+     * The key of the map is a short name for the link, following the naming constraints of the names for Component
+     * Objects.
+     *
+     * @var list<Link>
+     */
+    public $links = Undefined::UNDEFINED;
+
+    /**
+     * @inheritdoc
+     */
+    public static $_types = [
+        'description' => 'string',
+    ];
+
+    /**
+     * @inheritdoc
+     */
+    public static $_nested = [
+        MediaType::class => ['content', 'mediaType'],
+        Header::class => ['headers', 'header'],
+        Link::class => ['links', 'link'],
+        Attachable::class => ['attachables'],
+    ];
+
+    /**
+     * @inheritdoc
+     */
+    public static $_parents = [
+        Components::class,
+        Operation::class,
+        Get::class,
+        Post::class,
+        Put::class,
+        Patch::class,
+        Delete::class,
+        Head::class,
+        Options::class,
+        Trace::class,
+    ];
+
+    #[\Override]
+    public function validate(?Analysis $analysis = null, string $version = OpenApi::DEFAULT_VERSION, ?object $context = null): bool
+    {
+        $isValid = parent::validate($analysis, $version, $context);
+
+        if (Undefined::isDefault($this->description) && Undefined::isDefault($this->ref)) {
+            $this->_context->logger->warning($this->identity() . ' One of description or ref is required in ' . $this->_context);
+            $isValid = false;
+        }
+
+        return $isValid;
+    }
+}

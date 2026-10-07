@@ -1,0 +1,1622 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "AI Website API Documentation",
+        "description": "API documentation for AI Website backend service",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/up": {}
+    },
+    "components": {
+        "schemas": {
+            "App\\Http\\Requests\\Admin\\IndexMediaRequest": {
+                "properties": {
+                    "search": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "type": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "image",
+                            "document"
+                        ]
+                    },
+                    "month": {
+                        "type": "string",
+                        "example": "2026-09",
+                        "nullable": true
+                    },
+                    "sort": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "created_at",
+                            "updated_at",
+                            "title"
+                        ]
+                    },
+                    "direction": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ]
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "nullable": true,
+                        "maximum": 100,
+                        "minimum": 1
+                    },
+                    "page": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 1
+                    }
+                },
+                "type": "object"
+            },
+            "App\\Http\\Requests\\Admin\\StoreMediaRequest": {
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "nullable": true
+                    },
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "binary"
+                        },
+                        "nullable": true
+                    },
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "alt": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "caption": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "App\\Http\\Requests\\Admin\\UpdateMediaRequest": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "alt": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "caption": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "App\\Http\\Resources\\MediaResource": {
+                "required": [
+                    "id",
+                    "url"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "alt": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "caption": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "file_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "mime_type": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "extension": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "size": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "size_formatted": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "thumb_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "medium_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "width": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "height": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "is_image": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Requests\\Admin\\Customize\\SettingRequest": {
+                "properties": {
+                    "locale": {
+                        "type": "string",
+                        "example": "en",
+                        "nullable": true
+                    },
+                    "setting": {
+                        "type": "object",
+                        "additionalProperties": true
+                    },
+                    "theme_setting": {
+                        "type": "object",
+                        "additionalProperties": true
+                    },
+                    "blocks": {
+                        "type": "object",
+                        "additionalProperties": true
+                    },
+                    "widgets": {
+                        "type": "object",
+                        "additionalProperties": true
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Requests\\Admin\\IndexPageRequest": {
+                "properties": {
+                    "search": {
+                        "type": "string",
+                        "example": "about",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "published",
+                            "draft"
+                        ]
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "nullable": true,
+                        "maximum": 100,
+                        "minimum": 1
+                    },
+                    "page": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 1
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Requests\\Admin\\IndexUserRequest": {
+                "properties": {
+                    "search": {
+                        "type": "string",
+                        "example": "john",
+                        "nullable": true
+                    },
+                    "role": {
+                        "type": "string",
+                        "example": "editor",
+                        "nullable": true
+                    },
+                    "trashed": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "only",
+                            "with"
+                        ]
+                    },
+                    "sort": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "name",
+                            "email",
+                            "created_at"
+                        ]
+                    },
+                    "direction": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ]
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "nullable": true,
+                        "maximum": 100,
+                        "minimum": 1
+                    },
+                    "page": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 1
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Requests\\Admin\\MenuRequest": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Main Menu",
+                        "maxLength": 100
+                    },
+                    "content": {
+                        "description": "JSON tree of menu items. Required when updating.",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "locale": {
+                        "type": "string",
+                        "example": "en",
+                        "nullable": true,
+                        "maxLength": 10
+                    },
+                    "location": {
+                        "description": "Theme locations the menu is assigned to.",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Requests\\Admin\\PageRequest": {
+                "required": [
+                    "title",
+                    "slug"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "About us"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "about-us"
+                    },
+                    "content": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "published",
+                        "enum": [
+                            "published",
+                            "draft"
+                        ]
+                    },
+                    "template": {
+                        "type": "string",
+                        "example": "landing",
+                        "nullable": true
+                    },
+                    "locale": {
+                        "type": "string",
+                        "example": "en",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Requests\\Admin\\ResetUserPasswordRequest": {
+                "required": [
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "NewPassword123!",
+                        "minLength": 8
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "NewPassword123!"
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Requests\\Admin\\SettingRequest": {
+                "properties": {
+                    "title": {
+                        "type": "object",
+                        "example": {
+                            "en": "My site",
+                            "vi": "Trang của tôi"
+                        }
+                    },
+                    "description": {
+                        "type": "object",
+                        "example": {
+                            "en": "A short description"
+                        }
+                    },
+                    "sitename": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 120
+                    },
+                    "logo": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "favicon": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "banner": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "user_registration": {
+                        "type": "boolean"
+                    },
+                    "user_verification": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Requests\\Admin\\StoreUserRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe",
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "Secret123!",
+                        "minLength": 8
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "Secret123!"
+                    },
+                    "roles": {
+                        "description": "Spatie role names to assign.",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "editor"
+                        ]
+                    },
+                    "is_super_admin": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Requests\\Admin\\UpdateUserRequest": {
+                "required": [
+                    "name",
+                    "email"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe",
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
+                    },
+                    "roles": {
+                        "description": "Spatie role names to assign.",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "editor"
+                        ]
+                    },
+                    "is_super_admin": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Requests\\Admin\\WidgetUpdateRequest": {
+                "required": [
+                    "content"
+                ],
+                "properties": {
+                    "locale": {
+                        "type": "string",
+                        "example": "en",
+                        "nullable": true,
+                        "maxLength": 10
+                    },
+                    "content": {
+                        "description": "Ordered list of widgets attached to the sidebar.",
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "format": "uuid",
+                                    "nullable": true
+                                },
+                                "widget": {
+                                    "type": "string",
+                                    "example": "recent-posts"
+                                },
+                                "label": {
+                                    "type": "string",
+                                    "nullable": true
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "nullable": true,
+                                    "additionalProperties": true
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Resources\\MenuItemResource": {
+                "required": [
+                    "id",
+                    "target",
+                    "is_custom",
+                    "box_key",
+                    "display_order"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "label": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "link": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "target": {
+                        "type": "string",
+                        "example": "_self"
+                    },
+                    "is_custom": {
+                        "type": "boolean"
+                    },
+                    "box_key": {
+                        "type": "string"
+                    },
+                    "menuable_type": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "menuable_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "menuable_class_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "display_order": {
+                        "type": "integer"
+                    },
+                    "children": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Modules\\Admin\\Http\\Resources\\MenuItemResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Resources\\MenuResource": {
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Main Menu"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Modules\\Admin\\Http\\Resources\\MenuItemResource"
+                        }
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Resources\\PageResource": {
+                "required": [
+                    "id",
+                    "title",
+                    "slug"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "published"
+                    },
+                    "template": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "blocks": {
+                        "type": "object",
+                        "additionalProperties": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Resources\\SidebarResource": {
+                "required": [
+                    "key",
+                    "label"
+                ],
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "example": "sidebar"
+                    },
+                    "label": {
+                        "type": "string",
+                        "example": "Main sidebar"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Resources\\SidebarWidgetResource": {
+                "required": [
+                    "id",
+                    "widget",
+                    "label"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "widget": {
+                        "type": "string",
+                        "example": "recent-posts"
+                    },
+                    "label": {
+                        "type": "string",
+                        "example": "Recent posts"
+                    },
+                    "data": {
+                        "type": "object",
+                        "additionalProperties": true
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Resources\\UserResource": {
+                "required": [
+                    "id",
+                    "name",
+                    "email",
+                    "permissions",
+                    "created_at",
+                    "updated_at"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "9c3c6f1a-6df7-4b1e-b8eb-9d8e6c7d9a10"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "example": "http://localhost:8000/storage/1/avatar.jpg",
+                        "nullable": true
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "admin"
+                        ]
+                    },
+                    "is_super_admin": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "dashboard.view"
+                        ]
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-08-16T09:00:00.000000Z",
+                        "nullable": true
+                    },
+                    "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-08-16T09:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-08-16T09:00:00.000000Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Admin\\Http\\Resources\\WidgetResource": {
+                "required": [
+                    "key",
+                    "label"
+                ],
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "example": "recent-posts"
+                    },
+                    "label": {
+                        "type": "string",
+                        "example": "Recent posts"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "only": {
+                        "description": "Sidebar keys the widget may be attached to. Empty means any.",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Auth\\Http\\Requests\\ChangePasswordRequest": {
+                "required": [
+                    "current_password",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "current_password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "OldPassword123!"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "NewPassword123!"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "NewPassword123!"
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Auth\\Http\\Requests\\ForgotPasswordRequest": {
+                "required": [
+                    "email"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "admin@example.com"
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Auth\\Http\\Requests\\RegisterRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "Secret123!"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "Secret123!"
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Auth\\Http\\Requests\\ResetPasswordRequest": {
+                "required": [
+                    "token",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "abc123token"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "admin@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "NewPassword123!"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "NewPassword123!"
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Auth\\Http\\Requests\\UpdateProfileRequest": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "format": "binary",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Blog\\Http\\Requests\\Admin\\IndexCategoryRequest": {
+                "properties": {
+                    "search": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "sort": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "created_at",
+                            "updated_at"
+                        ]
+                    },
+                    "direction": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ]
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "nullable": true,
+                        "maximum": 100,
+                        "minimum": 1
+                    },
+                    "page": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 1
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Blog\\Http\\Requests\\Admin\\IndexCommentRequest": {
+                "properties": {
+                    "search": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "pending",
+                            "approved",
+                            "spam",
+                            "rejected"
+                        ]
+                    },
+                    "post_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "sort": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "created_at",
+                            "updated_at"
+                        ]
+                    },
+                    "direction": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ]
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "nullable": true,
+                        "maximum": 100,
+                        "minimum": 1
+                    },
+                    "page": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 1
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Blog\\Http\\Requests\\Admin\\IndexPostRequest": {
+                "properties": {
+                    "search": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "draft",
+                            "published"
+                        ]
+                    },
+                    "category": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "sort": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "created_at",
+                            "updated_at",
+                            "views"
+                        ]
+                    },
+                    "direction": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ]
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "nullable": true,
+                        "maximum": 100,
+                        "minimum": 1
+                    },
+                    "page": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 1
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Blog\\Http\\Requests\\Admin\\StoreCategoryRequest": {
+                "required": [
+                    "translations"
+                ],
+                "properties": {
+                    "parent_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "is_home": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "translations": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "locale",
+                                "name",
+                                "slug"
+                            ],
+                            "properties": {
+                                "locale": {
+                                    "type": "string",
+                                    "example": "en"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example": "News"
+                                },
+                                "slug": {
+                                    "type": "string",
+                                    "example": "news"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "nullable": true
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Blog\\Http\\Requests\\Admin\\StorePostRequest": {
+                "required": [
+                    "status",
+                    "translations"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "draft",
+                            "published"
+                        ]
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    "translations": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "locale",
+                                "title",
+                                "slug"
+                            ],
+                            "properties": {
+                                "locale": {
+                                    "type": "string",
+                                    "example": "en"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "Hello world"
+                                },
+                                "slug": {
+                                    "type": "string",
+                                    "example": "hello-world"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "nullable": true
+                                },
+                                "content": {
+                                    "type": "string",
+                                    "nullable": true
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Blog\\Http\\Requests\\Admin\\UpdateCategoryRequest": {
+                "properties": {
+                    "parent_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "is_home": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "translations": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "locale",
+                                "name",
+                                "slug"
+                            ],
+                            "properties": {
+                                "locale": {
+                                    "type": "string",
+                                    "example": "en"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example": "News"
+                                },
+                                "slug": {
+                                    "type": "string",
+                                    "example": "news"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "nullable": true
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Blog\\Http\\Requests\\Admin\\UpdateCommentRequest": {
+                "required": [
+                    "status"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "approved",
+                            "spam",
+                            "rejected"
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Blog\\Http\\Requests\\Admin\\UpdatePostRequest": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "draft",
+                            "published"
+                        ]
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    "translations": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "locale",
+                                "title",
+                                "slug"
+                            ],
+                            "properties": {
+                                "locale": {
+                                    "type": "string",
+                                    "example": "en"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "Hello world"
+                                },
+                                "slug": {
+                                    "type": "string",
+                                    "example": "hello-world"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "nullable": true
+                                },
+                                "content": {
+                                    "type": "string",
+                                    "nullable": true
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Blog\\Http\\Resources\\AuthorResource": {
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Lightweight author representation for blog posts, safe to expose on the\npublic API (no roles or permissions).",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Blog\\Http\\Resources\\CategoryResource": {
+                "required": [
+                    "id",
+                    "name",
+                    "slug"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "News",
+                        "nullable": true
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "news",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "parent_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "is_home": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "posts_count": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "translations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Modules\\Blog\\Http\\Resources\\CategoryTranslationResource"
+                        }
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Blog\\Http\\Resources\\CategoryTranslationResource": {
+                "required": [
+                    "id",
+                    "locale",
+                    "name",
+                    "slug"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "locale": {
+                        "type": "string",
+                        "example": "en"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "News"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "news"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Blog\\Http\\Resources\\CommentResource": {
+                "required": [
+                    "id",
+                    "post_id",
+                    "content",
+                    "status"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "post_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "parent_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe",
+                        "nullable": true
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "approved",
+                            "spam",
+                            "rejected"
+                        ]
+                    },
+                    "status_label": {
+                        "type": "string",
+                        "example": "Approved"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Blog\\Http\\Resources\\PostResource": {
+                "required": [
+                    "id",
+                    "title",
+                    "slug",
+                    "status"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Hello world",
+                        "nullable": true
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "hello-world",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "content": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "draft",
+                            "published"
+                        ]
+                    },
+                    "status_label": {
+                        "type": "string",
+                        "example": "Published"
+                    },
+                    "views": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "nullable": true
+                    },
+                    "author": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Modules\\Blog\\Http\\Resources\\AuthorResource"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Modules\\Blog\\Http\\Resources\\CategoryResource"
+                        }
+                    },
+                    "translations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Modules\\Blog\\Http\\Resources\\PostTranslationResource"
+                        }
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Modules\\Blog\\Http\\Resources\\PostTranslationResource": {
+                "required": [
+                    "id",
+                    "locale",
+                    "title",
+                    "slug"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "locale": {
+                        "type": "string",
+                        "example": "en"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Hello world"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "hello-world"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "content": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    }
+}

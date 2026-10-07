@@ -1,0 +1,32 @@
+<?php
+
+namespace Spatie\Image\Drivers\Concerns;
+
+use Spatie\Image\Drivers\ImageDriver;
+
+/** @mixin ImageDriver */
+trait CalculatesFocalCropCoordinates
+{
+    /** @return array{0: int, 1: int, 2: int|null, 3: int|null} */
+    protected function calculateFocalCropCoordinates(int $width, int $height, ?int $cropCenterX, ?int $cropCenterY): array
+    {
+        $width = min($width, $this->getWidth());
+        $height = min($height, $this->getHeight());
+
+        if ($cropCenterX > 0) {
+            $maxCropCenterX = $this->getWidth() - $width;
+            $cropCenterX = (int) ($cropCenterX - ($width / 2));
+            $cropCenterX = min($maxCropCenterX, $cropCenterX);
+            $cropCenterX = max(0, $cropCenterX);
+        }
+
+        if ($cropCenterY > 0) {
+            $maxCropCenterY = $this->getHeight() - $height;
+            $cropCenterY = (int) ($cropCenterY - ($height / 2));
+            $cropCenterY = min($maxCropCenterY, $cropCenterY);
+            $cropCenterY = max(0, $cropCenterY);
+        }
+
+        return [$width, $height, $cropCenterX, $cropCenterY];
+    }
+}

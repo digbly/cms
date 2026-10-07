@@ -1,0 +1,15 @@
+{
+    "name": "{{ vendor }}/theme-{{ alias }}",
+    "description": "",
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Themes\\{{ studly }}\\": "app/"
+        }
+    }
+}

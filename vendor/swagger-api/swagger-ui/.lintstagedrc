@@ -1,0 +1,4 @@
+{
+  "*.{js,jsx,ts,tsx}": ["eslint --max-warnings 0"],
+  "*.scss": ["stylelint '**/*.scss'"]
+}

@@ -1,0 +1,105 @@
+<?php declare(strict_types=1);
+
+/**
+ * @license Apache 2.0
+ */
+
+namespace OpenApi\Processors;
+
+use OpenApi\Analysis;
+use OpenApi\Annotations\AbstractAnnotation;
+use OpenApi\Annotations as OA;
+use OpenApi\Undefined;
+
+class AugmentRefs
+{
+    use Concerns\RefTrait;
+
+    public function __invoke(Analysis $analysis): void
+    {
+        $this->resolveAllOfRefs($analysis);
+        $this->resolveFQCNRefs($analysis);
+        $this->removeDuplicateRefs($analysis);
+    }
+
+    /**
+     * Update refs broken due to <code>allOf</code> augmenting.
+     */
+    protected function resolveAllOfRefs(Analysis $analysis): void
+    {
+        $schemas = $analysis->getAnnotationsOfType(OA\Schema::class);
+
+        // ref rewriting
+        $updatedRefs = [];
+        foreach ($schemas as $schema) {
+            if (!Undefined::isDefault($schema->allOf)) {
+                // do we have to keep track of property refs that need updating?
+                foreach ($schema->allOf as $ii => $allOfSchema) {
+                    if (!Undefined::isDefault($allOfSchema->properties)) {
+                        $updatedRefs[OA\Components::ref($schema->schema . '/properties', false)] = OA\Components::ref($schema->schema . '/allOf/' . $ii . '/properties', false);
+                        break;
+                    }
+                }
+            }
+        }
+
+        if ($updatedRefs !== []) {
+            foreach ($analysis->annotations as $annotation) {
+                if (property_exists($annotation, 'ref') && !Undefined::isDefault($annotation->ref) && $annotation->ref !== null) {
+                    foreach ($updatedRefs as $origRef => $updatedRef) {
+                        if (str_starts_with((string) $annotation->ref, $origRef)) {
+                            $annotation->ref = str_replace($origRef, $updatedRef, (string) $annotation->ref);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    protected function resolveFQCNRefs(Analysis $analysis): void
+    {
+        $annotations = $analysis->getAnnotationsOfType(OA\Components::componentTypes());
+
+        foreach ($annotations as $annotation) {
+            if (property_exists($annotation, 'ref') && !Undefined::isDefault($annotation->ref) && is_string($annotation->ref) && !$this->isRef($annotation->ref)) {
+                // check if we can resolve the ref to a component
+                $resolved = false;
+                foreach (OA\Components::componentTypes() as $type) {
+                    if (($refSchema = $analysis->getAnnotationForSource($annotation->ref, $type)) instanceof AbstractAnnotation) {
+                        $resolved = true;
+                        $annotation->ref = OA\Components::ref($refSchema);
+                    }
+                }
+                if (!$resolved && ($refAnnotation = $analysis->getAnnotationForSource($annotation->ref, $annotation::class))) {
+                    $annotation->ref = OA\Components::ref($refAnnotation);
+                }
+            }
+        }
+    }
+
+    protected function removeDuplicateRefs(Analysis $analysis): void
+    {
+        $schemas = $analysis->getAnnotationsOfType(OA\Schema::class);
+
+        foreach ($schemas as $schema) {
+            if (!Undefined::isDefault($schema->allOf)) {
+                $refs = [];
+                $dupes = [];
+                foreach ($schema->allOf as $ii => $allOfSchema) {
+                    if (!Undefined::isDefault($allOfSchema->ref)) {
+                        if (in_array($allOfSchema->ref, $refs)) {
+                            $dupes[] = $allOfSchema->ref;
+                            $analysis->removeAnnotation($allOfSchema);
+                            unset($schema->allOf[$ii]);
+                            continue;
+                        }
+                        $refs[] = $allOfSchema->ref;
+                    }
+                }
+                if ($dupes !== []) {
+                    $schema->allOf = array_values($schema->allOf);
+                }
+            }
+        }
+    }
+}

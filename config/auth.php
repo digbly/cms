@@ -1,7 +1,6 @@
 <?php
 
-use Juzaweb\Modules\Admin\Models\User;
-use Juzaweb\Modules\Core\Models\UserSocialConnection;
+use Modules\Auth\Models\User;
 
 return [
 
@@ -17,7 +16,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'web'),
+        'guard' => env('AUTH_GUARD', 'api'),
         'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
     ],
 
@@ -43,8 +42,9 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
         'api' => [
-            'driver' => 'juzaweb',
+            'driver' => 'passport',
             'provider' => 'users',
         ],
     ],
@@ -70,8 +70,12 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
-            'social_connection_model' => UserSocialConnection::class,
         ],
+
+        // 'users' => [
+        //     'driver' => 'database',
+        //     'table' => 'users',
+        // ],
     ],
 
     /*
@@ -107,7 +111,7 @@ return [
     | Password Confirmation Timeout
     |--------------------------------------------------------------------------
     |
-    | Here you may define the amount of seconds before a password confirmation
+    | Here you may define the number of seconds before a password confirmation
     | window expires and users are asked to re-enter their password via the
     | confirmation screen. By default, the timeout lasts for three hours.
     |

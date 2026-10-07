@@ -1,81 +1,52 @@
-Juzaweb CMS provides a Facade `ThemeSetting` (mapped to `Juzaweb\Modules\Core\Contracts\ThemeSetting`) to manage theme-specific configurations. These settings are stored in the database and are associated with the currently active theme.
+# Themes — Theme Configs
 
-## Usage
+## theme.json
 
-```php
-use Juzaweb\Modules\Core\Facades\ThemeSetting;
-
-// Get a setting value
-$value = ThemeSetting::get('key');
-```
-
-## Available Methods
-
-### get($key, $default = null)
-
-Retrieve the value of a theme setting key.
-
-```php
-$value = ThemeSetting::get('contact_email', 'admin@example.com');
-```
-
-### set($key, $value = null)
-
-Set a configuration value for the current theme.
-
-```php
-ThemeSetting::set('contact_email', 'new-email@example.com');
-```
-
-### sets(array $keys)
-
-Set multiple configuration values at once.
-
-```php
-ThemeSetting::sets([
-    'facebook_url' => 'https://facebook.com',
-    'twitter_url' => 'https://twitter.com',
-]);
-```
-
-### gets(array $keys, $default = null)
-
-Retrieve values for multiple keys.
-
-```php
-$socials = ThemeSetting::gets(['facebook_url', 'twitter_url']);
-```
-
-### all()
-
-Retrieve all settings for the current theme.
-
-```php
-$allSettings = ThemeSetting::all();
-```
-
-### boolean($key, $default = null)
-
-Retrieve a setting value as a boolean.
-
-```php
-if (ThemeSetting::boolean('show_banner')) {
-    // ...
+```json
+{
+    "name": "Default",
+    "alias": "default",
+    "description": "Default theme",
+    "version": "1.0.0",
+    "priority": 0,
+    "providers": [
+        "Themes\\Default\\Providers\\ThemeServiceProvider"
+    ],
+    "aliases": {},
+    "files": []
 }
 ```
 
-### integer($key, $default = null)
+- `name` is the identity used by the activator (the active theme name stored
+  in settings, or `themes/statuses.json` with the file activator).
+- `alias` is the lowercase key used for namespaces, config and helpers. Falls
+  back to `name` when omitted.
+- `priority` orders registration (`FileRepository::getOrdered()`).
+- `providers` are resolved through Laravel's `ProviderRepository` with a
+  per-theme cached services file (`<alias>_theme.php`).
+- `views`, `assets`, `lang`, `config`, `routes` may override the default
+  resource paths from `config/themes.php`.
 
-Retrieve a setting value as an integer.
+## config/themes.php
 
-```php
-$limit = ThemeSetting::integer('posts_per_page', 10);
-```
+- `default` — fallback theme alias.
+- `current` — set at runtime by `ThemeManager` (read-only).
+- `composer.vendor` — vendor name used by `theme:make` for the generated package.
+- `paths.themes` / `paths.assets` / `paths.assets_url`.
+- `paths.generator.*` — default resource subfolders.
+- `scan` — additional theme roots (e.g. `vendor/*/*`).
+- `register.translations` / `register.files`.
+- `activator` — selects which activator to use (default `database`,
+  `THEMES_ACTIVATOR`).
+- `activators.<name>.class` — activator definitions. `activators.file.statuses-file`
+  points to `themes/statuses.json`; `activators.database.key` (default `theme`)
+  is the settings key that holds the active theme name.
 
-### float($key, $default = null)
+## Theme settings
 
-Retrieve a setting value as a float.
+Per-theme options registered in code and edited through the customizer are
+covered in [Theme Settings](../the-basics/theme-settings.md).
 
-```php
-$price = ThemeSetting::float('tax_rate', 0.1);
-```
+## See also
+
+- [Information](information.md) · [Asset Compilation](assets.md)

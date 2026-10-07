@@ -1,6 +1,6 @@
 <?php
 
-use Juzaweb\Modules\Core\Translations\Models\LanguageLine;
+use App\Models\LanguageLine;
 use Spatie\TranslationLoader\TranslationLoaderManager;
 use Spatie\TranslationLoader\TranslationLoaders\Db;
 

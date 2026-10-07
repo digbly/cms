@@ -1,163 +1,76 @@
 # Translation
 
-Juzaweb CMS provides two types of translation: **Static Translation** (for application text) and **Database Translation** (for content).
+Translation has two sides: **content models** (translatable database records)
+and the **admin SPA strings** the Inertia front end loads at runtime.
 
-## Static Translation
+## Content models
 
-Static translation is used for translating application text such as labels, messages, and other static content.
-
-### Import translation
-
-```bash
-php artisan translation:import
-```
-
-This command imports translations from app and modules into the database.
-
-If you want to import only translations for a specific module, use the `--module` option.
-
-```bash
-php artisan translation:import --module=module-name
-```
-
-All languages and locales key will be imported to `translations` table. Include keys that are not declared in your language file. So you can use translate functions like `trans()`, `__()` or `t()` in react components, anywhere in your application and import them easily.
-
-### Export translation
-
-```bash
-php artisan translation:export
-```
-
-This command exports translations from database to app and modules language files. The export is done for all languages and locales that are declared in the `translations` table.
-
-## Database Translation
-
-This feature is a republished, reorganized, and maintained version of [Astrotomic/Translatable](https://github.com/Astrotomic/laravel-translatable) package.
-
-### Configuration
-
-First, you will have to configure the locales your app should use. You can do it in `config/translatable.php`
+Models that store per-locale content use `astrotomic/laravel-translatable`:
 
 ```php
-'locales' => [
-    'en',
-    'fr',
-],
-```
-
-### Usage
-
-In this example, we want to translate the model `Post`. We will need an extra table `post_translations`:
-
-```php
-Schema::create('posts', function(Blueprint $table) {
-    $table->increments('id');
-    $table->string('author');
-    $table->timestamps();
-});
-```
-
-And `post_translations` table:
-
-```php
-Schema::create('post_translations', function(Blueprint $table) {
-    $table->increments('id');
-    $table->integer('post_id')->unsigned();
-    $table->string('locale', 10)->index();
-    $table->string('title');
-    $table->text('content');
-
-    $table->unique(['post_id', 'locale']);
-    $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
-});
-```
-
-In example, columns `title` and `content` are translatable.
-
-In model `Post`, you should use the trait `Juzaweb\Modules\Admin\Translations\Traits\Translatable`. The default convention for the translation model is PostTranslation. The array `$translatedAttributes` contains the names of the fields being translated in the `PostTranslation` model.
-
-```php
-use Juzaweb\Modules\Admin\Translations\Contracts\Translatable as TranslatableContract;
-use Juzaweb\Modules\Admin\Traits\Translatable;
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
+use Astrotomic\Translatable\Translatable;
 
 class Post extends Model implements TranslatableContract
 {
     use Translatable;
 
-    public $translatedAttributes = ['title', 'content'];
-
-    protected $fillable = ['author'];
+    public array $translatedAttributes = ['title', 'description', 'content', 'slug'];
 }
 ```
 
-`PostTranslation` model:
+Rules:
+
+- Every translatable model **must** have a matching translation model
+  (`Post` → `PostTranslation`), whose table holds the translated columns plus a
+  `locale`.
+- Persist a locale's values with `translateOrNew($locale)` (see
+  `Page::fillTranslation()`).
+- `resolvedTranslation($locale)` resolves a translation with a fallback to the
+  first available locale.
+- The set of locales comes from `config/locales.php`; the admin language lines
+  are stored in the `Language` / `LanguageLine` models via
+  `spatie/laravel-translation-loader`.
+
+## Admin SPA strings
+
+The Inertia admin loads its strings at runtime from the backend, one namespace
+per owner. `HandleInertiaRequests` shares a `translations` prop keyed by
+namespace; `App\Support\AdminTranslations` builds it from the namespaces
+registered through the `AdminTranslation` registry. Each owner registers its own
+namespace from its service provider, so adding a module never requires editing a
+central file:
 
 ```php
-class PostTranslation extends Model
-{
-    public $timestamps = false;
+use App\Facades\AdminTranslation;
 
-    protected $fillable = ['title', 'content'];
-}
+AdminTranslation::make($this->nameLower, fn (): array => [
+    'group' => 'reports',
+    'path' => module_path($this->name, 'resources/lang'),
+]);
 ```
 
-### Query Methods
+When `path` is omitted the convention
+`modules/<Studly(namespace)>/resources/lang` is used. Read the strings in a page
+with `const { t } = useTranslation();` and `t('reports.title')` — the first
+segment is the namespace.
 
-In query, You can easily get translated information according to your needs.
+| Namespace | Backend group | Stored in |
+| --- | --- | --- |
+| `common` | `common` | `resources/lang/{en,vi}/common.php` (shell + auth layout) |
+| `admin` | `admin` | `modules/admin/resources/lang/{en,vi}/admin.php` (also holds backend menu labels) |
+| `auth` | `admin_auth` | `modules/auth/resources/lang/{en,vi}/admin_auth.php` |
+| `blog` | `blog` | `modules/blog/resources/lang/{en,vi}/blog.php` |
 
-Returns all posts being translated in english
+`registerNamespaces()` exposes each module's language directory as a translation
+namespace; because a module provider only boots when the module is enabled, a
+disabled module contributes no namespace or locale.
 
-```php
-Post::translatedIn('en')->get();
-```
+Do **not** add translation JSON to the frontend. Strings live in the backend:
+the shared shell in `resources/lang/{en,vi}/common.php`, and each module's own
+strings in that module's `resources/lang/` directory.
 
-Returns all posts not being translated in english
+## See also
 
-```php
-Post::notTranslatedIn('en')->get();
-```
-
-Returns all posts with existing translations
-
-```php
-Post::hasTranslations()->get();
-```
-
-Eager loads translation relationship only for the default and fallback (if enabled) locale
-
-```php
-Post::withTranslations()->get();
-```
-
-Returns an array containing pairs of post ids and the translated title attribute
-
-```php
-Post::translatedIn('en')->pluck('id', 'title')->all();
-```
-
-Filters posts by checking the translation against the given value
-
-```php
-// Filter by translation
-Post::whereTranslation('title', 'My first post')->first();
-
-// Filter by translation multiple columns
-Post::whereTranslation('title', 'My first post')
-    ->orWhereTranslation('title', 'My second post')
-    ->get();
-
-// Search by translation using LIKE
-Post::whereTranslationLike('title', '%first%')->first();
-
-// Search by translation using LIKE multiple columns
-Post::whereTranslationLike('title', '%first%')
-    ->orWhereTranslationLike('title', '%second%')
-    ->get();
-
-// Order by translation
-Post::orderByTranslation('title')->get();
-```
-
-### Further Documentation
-
-You can see more documentation in [astrotomic info website](https://docs.astrotomic.info/laravel-translatable).
+- [Modules — Information](../modules/information.md)
+- [Theme Settings](theme-settings.md)

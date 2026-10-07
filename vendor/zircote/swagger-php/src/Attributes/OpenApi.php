@@ -1,0 +1,46 @@
+<?php declare(strict_types=1);
+
+/**
+ * @license Apache 2.0
+ */
+
+namespace OpenApi\Attributes;
+
+use OpenApi\Annotations as OA;
+use OpenApi\Undefined;
+
+#[\Attribute(\Attribute::TARGET_CLASS)]
+class OpenApi extends OA\OpenApi
+{
+    /**
+     * @param list<Server>|null        $servers
+     * @param list<Tag>|null           $tags
+     * @param array<PathItem>|null     $paths
+     * @param list<Webhook>|null       $webhooks
+     * @param array<string,mixed>|null $x
+     * @param list<Attachable>|null    $attachables
+     */
+    public function __construct(
+        string $openapi = self::DEFAULT_VERSION,
+        ?Info $info = null,
+        ?array $servers = null,
+        ?array $security = null,
+        ?array $tags = null,
+        ?ExternalDocumentation $externalDocs = null,
+        ?array $paths = null,
+        ?Components $components = null,
+        ?array $webhooks = null,
+
+        // abstract annotation
+        ?array $x = null,
+        ?array $attachables = null
+    ) {
+        parent::__construct([
+                'openapi' => $openapi,
+                'security' => $security ?? Undefined::UNDEFINED,
+                'x' => $x ?? Undefined::UNDEFINED,
+                'attachables' => $attachables ?? Undefined::UNDEFINED,
+                'value' => $this->combine($info, $servers, $tags, $externalDocs, $paths, $components, $webhooks),
+            ]);
+    }
+}

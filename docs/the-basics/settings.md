@@ -1,83 +1,112 @@
-# Setting
+# Settings
 
-Juzaweb CMS provides a Helper/Facade `Setting` (mapped to `Juzaweb\Modules\Core\Contracts\Setting`) to manage global configurations. These settings are stored in the database and are available system-wide.
+Application settings are **defined in code** and **stored in the database**. A
+module or theme registers setting definitions once at boot through the
+`App\Facades\Setting` facade; the `SettingRepository` reads them back, resolves
+values from the `settings` table (with cache) and exposes typed accessors.
 
-## Usage
+This replaces the previous `config('settings')` approach: definitions live in
+the in-memory `App\Support\SettingsRegistry`, values live in the database and the
+admin validation request is derived from the same definitions.
 
-```php
-use Juzaweb\Modules\Core\Facades\Setting;
+## Register a setting
 
-// Get a setting value
-$value = Setting::get('key');
-```
-
-## Available Methods
-
-### get($key, $default = null)
-
-Retrieve the value of a setting key.
+Register definitions from a service provider's `boot()`:
 
 ```php
-$value = Setting::get('site_title', 'Juzaweb CMS');
+use App\Facades\Setting;
+
+Setting::make('title')
+    ->default((string) config('app.name'))
+    ->type('string')
+    ->translatable()
+    ->rules(['nullable', 'string', 'max:255'])
+    ->add();
 ```
 
-### set($key, $value = null)
+`Setting::make($key)` returns an `App\Support\Entities\Setting` builder. Calling
+`add()` writes the definition into the `SettingsRegistry`; if you do not call it
+explicitly, the entity's destructor adds it for you.
 
-Set a configuration value.
+## Builder API
+
+| Method | Description |
+| --- | --- |
+| `label(string)` | Human label shown in the admin (defaults to the key). |
+| `type(string)` | `string`, `text`, `boolean`, `integer`, `float`, `media`. |
+| `default(mixed)` | Fallback value when nothing is stored. |
+| `rules(array)` | Validation rules used by the admin `SettingRequest`. |
+| `translatable(bool = true)` | Store one value per locale. |
+| `showApi(bool)` / `disableShowApi()` | Whether the setting is exposed to the API. |
+| `add()` | Publish the definition to the registry. |
+
+## Reading values
+
+Resolve the repository from the container or the facade:
 
 ```php
-Setting::set('site_title', 'My Awesome Site');
+use App\Facades\Setting;
+
+Setting::get('title');                 // mixed
+Setting::boolean('user_registration'); // ?bool
+Setting::integer('per_page');          // ?int
+Setting::float('vat_rate');            // ?float
+Setting::gets(['title', 'description']); // array<string, mixed>
 ```
 
-### sets(array $keys)
-
-Set multiple configuration values at once.
+For a specific translation use the stateful `locale()` method:
 
 ```php
-Setting::sets([
-    'facebook_url' => 'https://facebook.com',
-    'twitter_url' => 'https://twitter.com',
-]);
+Setting::locale('vi')->get('title');
 ```
 
-### gets(array $keys, $default = null)
+The repository resolves values in this order: stored database value → the
+definition's `default` → the provided fallback.
 
-Retrieve values for multiple keys.
+> Note: theme-scoped settings use a different registry and the `theme_setting()`
+> helper — see [Theme Settings](theme-settings.md).
+
+## Translatable settings
+
+A setting marked `translatable()` stores its value in `setting_translations`,
+one row per locale. The `type` still drives casting. Store a locale's value
+explicitly:
 
 ```php
-$socials = Setting::gets(['facebook_url', 'twitter_url']);
+Setting::locale('vi')->set('title', 'Tiêu đề');
 ```
 
-### all()
+`SettingRepository::localized()` returns all translatable settings grouped by
+key with a `locale => value` collection.
 
-Retrieve all global settings.
+## How values are stored
 
-```php
-$allSettings = Setting::all();
+`SettingRepository::set()` uses `Setting::updateOrCreate` keyed by `code` and
+flushes the `settings.configs` cache. Non-translatable values are stored on the
+`settings` row; translatable values are written to the translation relation.
+
+## Caching
+
+Resolved configs are cached for one hour under `settings.configs` and memoised
+per request. `set()` and `sets()` invalidate both the cache and the memo, so
+values are always fresh after a write. To force a refresh outside a request:
+
+```bash
+php artisan cache:clear
 ```
 
-### boolean($key, $default = null)
+## Admin integration
 
-Retrieve a setting value as a boolean.
+The admin settings screen (`Admin::settings/Index`) is served by
+`Modules\Admin\Http\Controllers\Web\SettingController`. It builds its payload
+from the registered definitions (`settings()`), resolves typed values and
+media previews, and persists submitted data in a transaction through
+`SettingRequest` (validation derived from each definition's `rules`).
 
-```php
-if (Setting::boolean('enable_registration')) {
-    // ...
-}
-```
+## Conventions
 
-### integer($key, $default = null)
-
-Retrieve a setting value as an integer.
-
-```php
-$limit = Setting::integer('paginate', 10);
-```
-
-### float($key, $default = null)
-
-Retrieve a setting value as a float.
-
-```php
-$price = Setting::float('tax', 0.1);
-```
+- Define settings in the owning module or theme service provider, never in a
+  central config file.
+- Always provide `rules()` so the admin request can validate the value.
+- Use `translatable()` only for values that genuinely differ per locale.
+- Keys are global; prefix with the owner when a name could collide.

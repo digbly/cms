@@ -41,7 +41,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('STORAGE_URL', env('APP_URL').'/storage'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
@@ -56,51 +56,6 @@ return [
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
-            'throw' => false,
-            'report' => false,
-        ],
-
-        'cloud' => [
-            'driver' => 's3',
-            'key' => env('S3_CLOUD_KEY_ID'),
-            'secret' => env('S3_CLOUD_SECRET'),
-            'region' => env('S3_CLOUD_REGION'),
-            'bucket' => env('S3_CLOUD_BUCKET'),
-            'endpoint' => env('S3_CLOUD_ENDPOINT'),
-            'write_endpoint' => env('S3_CLOUD_WRITE_ENDPOINT'), // Optional custom endpoint for write operations
-            'bucket_endpoint' => true,
-            'use_path_style_endpoint' => false,
-            'throw' => true,
-            'visibility' => 'public',
-            'url' => env('S3_CLOUD_URL'),
-            'proxy_url' => env('S3_CLOUD_PROXY_URL'),
-            /**
-             * If enabled, media files will be served through a route in the application
-             * instead of directly from the cloud storage URL. This can be useful for
-             * handling access control, logging, or modifying the response.
-             *
-             * Default route: /media/{path}
-             */
-            'stream_route' => (bool) env('S3_CLOUD_STREAM_ROUTE', false),
-        ],
-
-        'private' => [
-            'driver' => 'local',
-            'root' => storage_path('app/private'),
-            'throw' => false,
-            'report' => false,
-        ],
-
-        'tmp' => [
-            'driver' => 'local',
-            'root' => storage_path('app/tmp'),
-            'throw' => false,
-            'report' => false,
-        ],
-
-        'trash' => [
-            'driver' => 'local',
-            'root' => storage_path('app/trash'),
             'throw' => false,
             'report' => false,
         ],

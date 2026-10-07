@@ -1,0 +1,187 @@
+<?php declare(strict_types=1);
+
+/**
+ * @license Apache 2.0
+ */
+
+namespace OpenApi\Analysers;
+
+use OpenApi\Analysis;
+use OpenApi\Annotations as OA;
+use OpenApi\Context;
+use OpenApi\Generator;
+use OpenApi\GeneratorAwareTrait;
+use OpenApi\OpenApiException;
+use OpenApi\Utils\TokenScanner;
+
+/**
+ * OpenApi analyser using reflection.
+ *
+ * Can read either PHP <code>DocBlock</code>s or <code>Attribute</code>s.
+ *
+ * Due to the nature of reflection, this requires all related classes to be auto-loadable.
+ */
+class ReflectionAnalyser implements AnalyserInterface
+{
+    use GeneratorAwareTrait;
+
+    /** @var list<AnnotationFactoryInterface> */
+    protected array $annotationFactories = [];
+
+    /**
+     * @param list<AnnotationFactoryInterface> $annotationFactories
+     */
+    public function __construct(array $annotationFactories = [])
+    {
+        foreach ($annotationFactories as $annotationFactory) {
+            if ($annotationFactory->isSupported()) {
+                $this->annotationFactories[] = $annotationFactory;
+            }
+        }
+
+        if (!$this->annotationFactories) {
+            throw new OpenApiException('No suitable annotation factory found. At least one of "Doctrine Annotations" or PHP 8.1 are required');
+        }
+    }
+
+    public function setGenerator(Generator $generator): static
+    {
+        $this->generator = $generator;
+
+        foreach ($this->annotationFactories as $annotationFactory) {
+            $annotationFactory->setGenerator($generator);
+        }
+
+        return $this;
+    }
+
+    public function fromFile(string $filename, Context $context): Analysis
+    {
+        $scanner = new TokenScanner();
+        $fileDetails = $scanner->scanFile($filename);
+
+        $analysis = new Analysis([], $context);
+        foreach ($fileDetails as $fqdn => $details) {
+            $this->analyzeFqdn($fqdn, $analysis, $details);
+        }
+
+        return $analysis;
+    }
+
+    public function fromFqdn(string $fqdn, Analysis $analysis): Analysis
+    {
+        $fqdn = ltrim($fqdn, '\\');
+
+        $rc = new \ReflectionClass($fqdn);
+        if (!$filename = $rc->getFileName()) {
+            return $analysis;
+        }
+
+        $scanner = new TokenScanner();
+        $fileDetails = $scanner->scanFile($filename);
+
+        $this->analyzeFqdn($fqdn, $analysis, $fileDetails[$fqdn]);
+
+        return $analysis;
+    }
+
+    protected function analyzeFqdn(string $fqdn, Analysis $analysis, array $details): Analysis
+    {
+        if (!class_exists($fqdn) && !interface_exists($fqdn) && !trait_exists($fqdn) && (!function_exists('enum_exists') || !enum_exists($fqdn))) {
+            $analysis->context->logger->warning('Skipping unknown ' . $fqdn);
+
+            return $analysis;
+        }
+
+        $rc = new \ReflectionClass($fqdn);
+        $contextType = $rc->isInterface()
+            ? 'interface'
+            : ($rc->isTrait() ? 'trait' : ($rc->isEnum() ? 'enum' : 'class'));
+        $context = new Context([
+            $contextType => $rc->getShortName(),
+            'namespace' => $rc->getNamespaceName() ?: null,
+            'uses' => $details['uses'],
+            'comment' => $rc->getDocComment() ?: null,
+            'filename' => $rc->getFileName() ?: null,
+            'line' => $rc->getStartLine(),
+            'annotations' => [],
+            'scanned' => $details,
+            'reflector' => $rc,
+        ], $analysis->context);
+
+        $definition = [
+            $contextType => $rc->getShortName(),
+            'extends' => null,
+            'implements' => [],
+            'traits' => [],
+            'properties' => [],
+            'methods' => [],
+            'context' => $context,
+        ];
+        $normaliseClass = static fn (string $name): string => '\\' . ltrim($name, '\\');
+        if ($parentClass = $rc->getParentClass()) {
+            $definition['extends'] = $normaliseClass($parentClass->getName());
+        }
+        $definition[$contextType === 'class' ? 'implements' : 'extends'] = array_map($normaliseClass, $details['interfaces']);
+        $definition['traits'] = array_map($normaliseClass, $details['traits']);
+
+        foreach ($this->annotationFactories as $annotationFactory) {
+            $analysis->addAnnotations($annotationFactory->build($rc, $context), $context);
+        }
+
+        foreach ($rc->getMethods() as $method) {
+            if (in_array($method->name, $details['methods'])) {
+                $definition['methods'][$method->getName()] = $ctx = new Context([
+                    'method' => $method->getName(),
+                    'comment' => $method->getDocComment() ?: null,
+                    'filename' => $method->getFileName() ?: null,
+                    'line' => $method->getStartLine(),
+                    'annotations' => [],
+                    'reflector' => $method,
+                ], $context);
+                foreach ($this->annotationFactories as $annotationFactory) {
+                    $annotations = $annotationFactory->build($method, $ctx);
+                    $analysis->addAnnotations($annotations, $ctx);
+                }
+            }
+        }
+
+        foreach ($rc->getProperties() as $property) {
+            if (in_array($property->name, $details['properties'])) {
+                $definition['properties'][$property->getName()] = $ctx = new Context([
+                    'property' => $property->getName(),
+                    'comment' => $property->getDocComment() ?: null,
+                    'annotations' => [],
+                    'reflector' => $property,
+                ], $context);
+                if ($property->isStatic()) {
+                    $ctx->static = true;
+                }
+                foreach ($this->annotationFactories as $annotationFactory) {
+                    $analysis->addAnnotations($annotationFactory->build($property, $ctx), $ctx);
+                }
+            }
+        }
+
+        foreach ($rc->getReflectionConstants() as $constant) {
+            foreach ($this->annotationFactories as $annotationFactory) {
+                $definition['constants'][$constant->getName()] = $ctx = new Context([
+                    'constant' => $constant->getName(),
+                    'comment' => $constant->getDocComment() ?: null,
+                    'annotations' => [],
+                    'reflector' => $constant,
+                ], $context);
+                foreach ($annotationFactory->build($constant, $ctx) as $annotation) {
+                    if ($annotation instanceof OA\Property) {
+                        $analysis->addAnnotation($annotation, $ctx);
+                    }
+                }
+            }
+        }
+
+        $addDefinition = 'add' . ucfirst($contextType) . 'Definition';
+        $analysis->{$addDefinition}($definition);
+
+        return $analysis;
+    }
+}

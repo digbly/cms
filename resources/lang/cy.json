@@ -1,7 +1,0 @@
-{
-    "The :attribute must contain at least one letter.": "Rhaid i'r :attribute gynnwys o leiaf un llythyren.",
-    "The :attribute must contain at least one number.": "Rhaid i'r :attribute gynnwys o leiaf un rhif.",
-    "The :attribute must contain at least one symbol.": "Rhaid i'r :attribute gynnwys o leiaf un symbol.",
-    "The :attribute must contain at least one uppercase and one lowercase letter.": "Rhaid i'r :attribute gynnwys o leiaf un llythyren fawr ac un llythyren fach.",
-    "The given :attribute has appeared in a data leak. Please choose a different :attribute.": "Mae'r :attribute hwnnw wedi ymddangos mewn gollyngiad data. Dewiswch :attribute gwahanol."
-}

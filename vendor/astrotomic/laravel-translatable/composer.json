@@ -1,0 +1,74 @@
+{
+    "name": "astrotomic/laravel-translatable",
+    "description": "A Laravel package for multilingual models",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "translation",
+        "language",
+        "database"
+    ],
+    "authors": [
+        {
+            "name": "Tom Witkowski",
+            "email": "gummibeer@astrotomic.info",
+            "homepage": "https://gummibeer.de",
+            "role": "Developer"
+        },
+        {
+            "name": "Dimitrios Savvopoulos",
+            "email": "ds@dimsav.com",
+            "homepage": "http://dimsav.com",
+            "role": "Developer"
+        }
+    ],
+    "homepage": "https://astrotomic.info",
+    "support": {
+        "email": "dev@astrotomic.info",
+        "issues": "https://github.com/Astrotomic/laravel-translatable/issues",
+        "source": "https://github.com/Astrotomic/laravel-translatable",
+        "docs": "https://docs.astrotomic.info/laravel-translatable"
+    },
+    "require": {
+        "php": "^8.0",
+        "illuminate/contracts": "^9.0 || ^10.0 || ^11.0 || ^12.0 || ^13.0",
+        "illuminate/database": "^9.0 || ^10.0 || ^11.0 || ^12.0 || ^13.0",
+        "illuminate/support": "^9.0 || ^10.0 || ^11.0 || ^12.0 || ^13.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^2.0 || ^3.0",
+        "laravel/legacy-factories": "^1.0.4",
+        "laravel/pint": "^1.0",
+        "mockery/mockery": "^1.3.3",
+        "orchestra/testbench": "^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0",
+        "phpunit/phpunit": "^10.0 || ^11.0 || ^12.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Astrotomic\\Translatable\\": "src/Translatable/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Astrotomic\\Translatable\\TranslatableServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "fix": "@php vendor/bin/pint",
+        "phpstan": "@php vendor/bin/phpstan analyse",
+        "test": "@php vendor/bin/phpunit",
+        "test-coverage": "@php vendor/bin/phpunit --coverage-html=build"
+    }
+}
