@@ -1,4 +1,0 @@
-dist/
-node_modules/
-test/e2e-selenium/
-**/*.d.ts
