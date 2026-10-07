@@ -1,0 +1,15 @@
+{
+    "name": "juzaweb/theme-default",
+    "description": "Default blog theme built with Blade and Tailwind CSS",
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Themes\\Default\\": "app/"
+        }
+    }
+}

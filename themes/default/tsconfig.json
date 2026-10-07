@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "jsx": "react-jsx",
+        "strict": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["resources/views/*"]
+        }
+    },
+    "include": ["resources/views/**/*.ts", "resources/views/**/*.tsx"]
+}

@@ -1,0 +1,27 @@
+import { Head, Link } from '@inertiajs/react';
+import { route } from '@/lib/route';
+
+interface HomeProps {
+    siteName: string;
+}
+
+export default function Home({ siteName }: HomeProps) {
+    return (
+        <main className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
+            <Head title={siteName} />
+
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900">{siteName}</h1>
+            <p className="text-sm text-slate-500">
+                Your {{ studly }} theme is ready. Start building in{' '}
+                <code className="rounded bg-slate-100 px-1.5 py-0.5">resources/views/pages/Home.tsx</code>.
+            </p>
+
+            <Link
+                href={route('{{ alias }}.home')}
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+            >
+                Home
+            </Link>
+        </main>
+    );
+}

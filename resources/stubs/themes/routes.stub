@@ -1,0 +1,8 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
+Route::get('/', fn () => Inertia::render('Home', [
+    'siteName' => config('app.name'),
+])->rootView('{{ alias }}::theme'))->name('{{ alias }}.home');
