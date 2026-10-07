@@ -29,7 +29,7 @@ class CommentController extends Controller
         ]);
 
         return redirect()
-            ->route('default.posts.show', $post->resolvedTranslation()?->slug)
+            ->to(home_url("posts/{$post->resolvedTranslation()?->slug}", app()->getLocale()))
             ->with('comment_status', __('default::messages.comment_pending'));
     }
 }

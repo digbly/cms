@@ -241,6 +241,78 @@ class DefaultThemeTest extends TestCase
             ->assertSee('"component":"NotFound"', false);
     }
 
+    public function test_prefix_mode_serves_non_default_language_under_its_locale(): void
+    {
+        Setting::set('multiple_language', 'prefix');
+        Setting::set('language', 'en');
+
+        $this->makePost(['title' => 'Hello', 'slug' => 'hello']);
+
+        $this->get('/vi')
+            ->assertOk()
+            ->assertInertia(fn (Assert $inertia) => $inertia->component('Home', false));
+
+        $this->get('/')
+            ->assertOk()
+            ->assertInertia(fn (Assert $inertia) => $inertia->component('Home', false));
+    }
+
+    public function test_home_url_honours_the_multiple_language_setting(): void
+    {
+        Setting::set('language', 'en');
+        Setting::set('multiple_language', 'none');
+
+        $this->assertSame(url('/posts/x'), home_url('posts/x', 'en'));
+        $this->assertSame(url('/posts/x'), home_url('posts/x', 'vi'));
+
+        Setting::set('multiple_language', 'prefix');
+
+        $this->assertSame(url('/posts/x'), home_url('posts/x', 'en'));
+        $this->assertSame(url('/vi/posts/x'), home_url('posts/x', 'vi'));
+    }
+
+    public function test_page_renders_published_content(): void
+    {
+        $page = Page::create(['status' => 'published']);
+        $page->translations()->create([
+            'locale' => 'en',
+            'title' => 'About us',
+            'slug' => 'about-us',
+            'content' => '<p>Hello page</p>',
+        ]);
+
+        $this->get('/about-us')
+            ->assertOk()
+            ->assertSee('About us')
+            ->assertSee('Hello page', false)
+            ->assertInertia(fn (Assert $inertia) => $inertia
+                ->component('Page', false)
+                ->where('heading', 'About us'));
+    }
+
+    public function test_draft_page_is_not_publicly_visible(): void
+    {
+        $page = Page::create(['status' => 'draft']);
+        $page->translations()->create([
+            'locale' => 'en',
+            'title' => 'Secret',
+            'slug' => 'secret',
+        ]);
+
+        $this->get('/secret')->assertNotFound();
+    }
+
+    public function test_unknown_locale_falls_back_to_the_default_language(): void
+    {
+        $this->makePost(['title' => 'Fallback', 'slug' => 'fallback']);
+
+        $this->get('/zz/posts/fallback')
+            ->assertOk()
+            ->assertInertia(fn (Assert $inertia) => $inertia
+                ->component('Post', false)
+                ->where('post.title', 'Fallback'));
+    }
+
     public function test_header_renders_brand_and_primary_menu(): void
     {
         Setting::set('sitename', 'My Site');

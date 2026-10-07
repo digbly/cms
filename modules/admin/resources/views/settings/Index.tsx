@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Globe, Save, Share2 } from 'lucide-react';
+import { Globe, Languages, Save, Share2 } from 'lucide-react';
 import AdminLayout from '@modules/admin/resources/views/layouts/AdminLayout';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Checkbox from '@/components/ui/Checkbox';
 import Input from '@/components/ui/Input';
+import Select from '@/components/ui/Select';
 import PageHeader from '@/components/ui/PageHeader';
 import MediaField from '../components/MediaField';
 import type { MediaItemSummary } from '../components/MediaPickerModal';
@@ -16,6 +17,11 @@ import { useTranslation } from '@/hooks/useTranslation';
 interface SocialProvider {
     value: string;
     label: string;
+}
+
+interface LanguageOption {
+    code: string;
+    name: string;
 }
 
 type SocialFormFields = Record<`social_login_${string}`, string | boolean>;
@@ -31,6 +37,8 @@ interface SettingsProps {
         banner?: string | null;
         user_registration?: boolean | null;
         user_verification?: boolean | null;
+        multiple_language?: string | null;
+        language?: string | null;
     } & Record<`social_login_${string}`, string | boolean | null | undefined>;
     media: {
         logo: MediaItemSummary | null;
@@ -38,6 +46,7 @@ interface SettingsProps {
         banner: MediaItemSummary | null;
     };
     locales: string[];
+    languages: LanguageOption[];
     socialProviders: SocialProvider[];
 }
 
@@ -50,6 +59,8 @@ type SettingsForm = SocialFormFields & {
     banner: string | null;
     user_registration: boolean;
     user_verification: boolean;
+    multiple_language: string;
+    language: string;
 };
 
 const socialDefaults = (
@@ -69,7 +80,7 @@ const socialDefaults = (
     return defaults;
 };
 
-export default function Settings({ title, settings, media, locales, socialProviders = [] }: SettingsProps) {
+export default function Settings({ title, settings, media, locales, languages = [], socialProviders = [] }: SettingsProps) {
     const { t } = useTranslation();
     const [activeLocale, setActiveLocale] = useState(locales[0] ?? 'en');
 
@@ -90,6 +101,8 @@ export default function Settings({ title, settings, media, locales, socialProvid
             banner: settings.banner ?? null,
             user_registration: Boolean(settings.user_registration),
             user_verification: Boolean(settings.user_verification),
+            multiple_language: settings.multiple_language ?? 'none',
+            language: settings.language ?? languages[0]?.code ?? 'en',
             ...socialDefaults(settings, socialProviders),
         },
     });
@@ -106,6 +119,13 @@ export default function Settings({ title, settings, media, locales, socialProvid
         { key: 'logo', label: t('admin.settings.fields.logo', 'Logo') },
         { key: 'favicon', label: t('admin.settings.fields.favicon', 'Favicon') },
         { key: 'banner', label: t('admin.settings.fields.banner', 'Banner') },
+    ];
+
+    const languageModes = [
+        { value: 'none', label: t('admin.settings.modes.none', 'Single language') },
+        { value: 'session', label: t('admin.settings.modes.session', 'Session') },
+        { value: 'prefix', label: t('admin.settings.modes.prefix', 'URL prefix') },
+        { value: 'subdomain', label: t('admin.settings.modes.subdomain', 'Subdomain') },
     ];
 
     return (
@@ -164,6 +184,52 @@ export default function Settings({ title, settings, media, locales, socialProvid
                             {...register('sitename', { maxLength: 120 })}
                         />
                     </div>
+                </Card>
+
+                <Card className="p-6">
+                    <h2 className="mb-1 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                        <Languages className="h-4 w-4" />
+                        {t('admin.settings.languages.title', 'Languages')}
+                    </h2>
+                    <p className="mb-5 text-xs text-slate-500 dark:text-slate-400">
+                        {t(
+                            'admin.settings.languages.subtitle',
+                            'Control how multiple languages are exposed on the front end.'
+                        )}
+                    </p>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <Select
+                            label={t('admin.settings.fields.defaultLanguage', 'Default language')}
+                            error={errors.language?.message}
+                            {...register('language')}
+                        >
+                            {languages.map((language) => (
+                                <option key={language.code} value={language.code}>
+                                    {language.name}
+                                </option>
+                            ))}
+                        </Select>
+
+                        <Select
+                            label={t('admin.settings.fields.multipleLanguage', 'Multiple language mode')}
+                            error={errors.multiple_language?.message}
+                            {...register('multiple_language')}
+                        >
+                            {languageModes.map((mode) => (
+                                <option key={mode.value} value={mode.value}>
+                                    {mode.label}
+                                </option>
+                            ))}
+                        </Select>
+                    </div>
+
+                    <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                        {t(
+                            'admin.settings.fields.multipleLanguageHint',
+                            'URL prefix adds a locale segment, e.g. /vi/posts/hello. The default language stays unprefixed.'
+                        )}
+                    </p>
                 </Card>
 
                 <Card className="p-6">

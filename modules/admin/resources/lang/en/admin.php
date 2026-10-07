@@ -291,6 +291,9 @@ return [
             'descriptionPlaceholder' => 'A short description of your website',
             'favicon' => 'Favicon',
             'logo' => 'Logo',
+            'defaultLanguage' => 'Default language',
+            'multipleLanguage' => 'Multiple language mode',
+            'multipleLanguageHint' => 'URL prefix adds a locale segment, e.g. /vi/posts/hello. The default language stays unprefixed.',
             'sitename' => 'Site name',
             'sitenamePlaceholder' => 'MyWebsite',
             'title' => 'Title',
@@ -304,6 +307,16 @@ return [
             'locale' => 'Language',
             'subtitle' => 'Site title, description and short name.',
             'title' => 'General',
+        ],
+        'languages' => [
+            'subtitle' => 'Control how multiple languages are exposed on the front end.',
+            'title' => 'Languages',
+        ],
+        'modes' => [
+            'none' => 'Single language',
+            'session' => 'Session',
+            'prefix' => 'URL prefix',
+            'subdomain' => 'Subdomain',
         ],
         'notices' => [
             'saved' => 'Settings saved successfully.',

@@ -33,7 +33,32 @@ class SettingsPageTest extends TestCase
                 ->component('Admin::settings/Index', false)
                 ->has('settings')
                 ->has('locales')
+                ->has('languages')
                 ->has('socialProviders', count(SocialProvider::cases()))
+            );
+    }
+
+    public function test_super_admin_can_update_language_settings(): void
+    {
+        $admin = User::factory()->create(['is_super_admin' => true]);
+
+        $this->actingAs($admin, 'web')
+            ->put('/admin/settings', [
+                'multiple_language' => 'prefix',
+                'language' => 'vi',
+            ])
+            ->assertRedirect();
+
+        $settings = app(SettingContract::class);
+        $this->assertSame('prefix', $settings->get('multiple_language'));
+        $this->assertSame('vi', $settings->get('language'));
+
+        $this->actingAs($admin, 'web')
+            ->get('/admin/settings')
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('settings.multiple_language', 'prefix')
+                ->where('settings.language', 'vi')
             );
     }
 

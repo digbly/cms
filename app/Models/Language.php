@@ -53,9 +53,9 @@ class Language extends Model
      */
     public static function default(): string
     {
-        $default = static::query()->where('is_default', true)->value('code');
-
-        return $default ?? config('translatable.fallback_locale');
+        return setting('language')
+            ?? static::query()->where('is_default', true)->value('code')
+            ?? config('translatable.fallback_locale');
     }
 
     public static function existsCode(string $code): bool

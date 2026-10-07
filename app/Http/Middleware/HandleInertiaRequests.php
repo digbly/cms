@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Facades\Menu;
+use App\Models\Language;
 use App\Support\AdminTranslations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -12,6 +13,16 @@ use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
+    /**
+     * Name prefix shared by every front-end route of the active theme.
+     */
+    protected const THEME_ROUTE_PREFIX = 'default.';
+
+    /**
+     * Name prefix for the locale-prefixed front-end routes.
+     */
+    protected const LOCALE_ROUTE_PREFIX = 'default.locale.';
+
     /**
      * The root template rendered on the first page visit.
      */
@@ -144,16 +155,50 @@ class HandleInertiaRequests extends Middleware
      */
     protected function routes(): array
     {
+        $locale = app()->getLocale();
+
         // Bounded cache: the route map only changes when a theme or module is
         // activated, so a short TTL keeps it fresh without rebuilding it on
-        // every response.
+        // every response. The locale is part of the key because the canonical
+        // front-end names are pointed at the prefixed routes in `prefix` mode.
         return Cache::remember(
-            'inertia.routes.'.(theme_name() ?? 'default'),
+            'inertia.routes.'.(theme_name() ?? 'default').'.'.$locale,
             now()->addMinutes(5),
-            fn (): array => collect(Route::getRoutes()->getRoutes())
-                ->filter(fn ($route) => $route->getName() !== null)
-                ->mapWithKeys(fn ($route) => [$route->getName() => '/'.ltrim($route->uri(), '/')])
-                ->all()
+            function () use ($locale): array {
+                $routes = Route::getRoutes()->getRoutes();
+
+                $map = [];
+
+                foreach ($routes as $route) {
+                    $name = $route->getName();
+
+                    if ($name === null || str_starts_with($name, self::LOCALE_ROUTE_PREFIX)) {
+                        continue;
+                    }
+
+                    $map[$name] = '/'.ltrim($route->uri(), '/');
+                }
+
+                if ($locale !== Language::default() && setting('multiple_language', 'none') === 'prefix') {
+                    foreach ($routes as $route) {
+                        $name = $route->getName();
+
+                        if ($name === null || ! str_starts_with($name, self::LOCALE_ROUTE_PREFIX)) {
+                            continue;
+                        }
+
+                        $canonical = self::THEME_ROUTE_PREFIX.substr($name, strlen(self::LOCALE_ROUTE_PREFIX));
+
+                        $map[$canonical] = str_replace(
+                            '{locale}',
+                            $locale,
+                            '/'.ltrim($route->uri(), '/')
+                        );
+                    }
+                }
+
+                return $map;
+            }
         );
     }
 }

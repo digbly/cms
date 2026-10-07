@@ -17,6 +17,13 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'banner', type: 'string', nullable: true, format: 'uuid'),
         new OA\Property(property: 'user_registration', type: 'boolean'),
         new OA\Property(property: 'user_verification', type: 'boolean'),
+        new OA\Property(
+            property: 'multiple_language',
+            type: 'string',
+            enum: ['none', 'session', 'prefix', 'subdomain'],
+            nullable: true
+        ),
+        new OA\Property(property: 'language', type: 'string', nullable: true, maxLength: 10),
         new OA\Property(property: 'social_login_google_enabled', type: 'boolean'),
         new OA\Property(property: 'social_login_google_client_id', type: 'string', nullable: true, maxLength: 255),
         new OA\Property(property: 'social_login_google_client_secret', type: 'string', nullable: true, maxLength: 255),

@@ -291,6 +291,9 @@ return [
             'descriptionPlaceholder' => 'Mô tả ngắn về website của bạn',
             'favicon' => 'Favicon',
             'logo' => 'Logo',
+            'defaultLanguage' => 'Ngôn ngữ mặc định',
+            'multipleLanguage' => 'Chế độ đa ngôn ngữ',
+            'multipleLanguageHint' => 'Tiền tố URL thêm đoạn locale, ví dụ /vi/posts/hello. Ngôn ngữ mặc định không có tiền tố.',
             'sitename' => 'Tên site',
             'sitenamePlaceholder' => 'MyWebsite',
             'title' => 'Tiêu đề',
@@ -304,6 +307,16 @@ return [
             'locale' => 'Ngôn ngữ',
             'subtitle' => 'Tiêu đề, mô tả và tên ngắn của site.',
             'title' => 'Chung',
+        ],
+        'languages' => [
+            'subtitle' => 'Kiểm soát cách hiển thị đa ngôn ngữ trên giao diện.',
+            'title' => 'Ngôn ngữ',
+        ],
+        'modes' => [
+            'none' => 'Một ngôn ngữ',
+            'session' => 'Theo phiên',
+            'prefix' => 'Tiền tố URL',
+            'subdomain' => 'Tên miền phụ',
         ],
         'notices' => [
             'saved' => 'Lưu cài đặt thành công.',

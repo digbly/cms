@@ -10,6 +10,7 @@ use App\Contracts\PageBlock as PageBlockContract;
 use App\Contracts\PageTemplate as PageTemplateContract;
 use App\Contracts\Setting as SettingContract;
 use App\Contracts\Sidebar as SidebarContract;
+use App\Contracts\Sitemap as SitemapContract;
 use App\Contracts\ThemeSetting as ThemeSettingContract;
 use App\Contracts\Widget as WidgetContract;
 use App\Facades\AdminTranslation;
@@ -22,6 +23,7 @@ use App\Support\PageBlockRepository;
 use App\Support\PageTemplateRepository;
 use App\Support\SettingRepository;
 use App\Support\SidebarRepository;
+use App\Support\SitemapRepository;
 use App\Support\ThemeSettingRepository;
 use App\Support\WidgetRepository;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
@@ -53,6 +55,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(SidebarContract::class, SidebarRepository::class);
         $this->app->singleton(PageBlockContract::class, PageBlockRepository::class);
         $this->app->singleton(PageTemplateContract::class, PageTemplateRepository::class);
+        $this->app->singleton(SitemapContract::class, SitemapRepository::class);
         $this->app->singleton(CustomizeRegistry::class);
     }
 

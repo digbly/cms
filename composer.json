@@ -1,9 +1,18 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "digbly/cms",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "homepage": "https://digbly.com",
+    "description": "Juzaweb CMS is a Content Management System (CMS) developed based on Laravel Framework and web platform whose sole purpose is to make your development workflow simple again. Project develop by Juzaweb",
+    "keywords": [
+        "framework",
+        "laravel",
+        "laravel cms",
+        "laravel cms like wordpress",
+        "cms like wordpress",
+        "juzaweb",
+        "juzacms"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.2",

@@ -8,6 +8,7 @@ return [
     'search_placeholder' => 'Search articles...',
     'search_results' => 'Search results for ":query"',
     'no_posts' => 'No posts found.',
+    'no_content' => 'This page has no content yet.',
     'no_search_results' => 'No articles matched your search.',
     'categories' => 'Categories',
     'recent_posts' => 'Recent posts',

@@ -4,6 +4,7 @@ namespace Modules\Admin\Http\Controllers\Web;
 
 use App\Contracts\Setting as SettingContract;
 use App\Http\Controllers\Controller;
+use App\Models\Language;
 use App\Support\AdminTranslations;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
@@ -33,6 +34,13 @@ class SettingController extends Controller
             'title' => __('admin.nav.settings'),
             'settings' => $settings,
             'locales' => $translations->locales(),
+            'languages' => Language::languages()
+                ->map(fn (Language $language): array => [
+                    'code' => $language->code,
+                    'name' => $language->name,
+                ])
+                ->values()
+                ->all(),
             'media' => $this->mediaPreviews($settings),
             'socialProviders' => collect(SocialProvider::cases())
                 ->map(fn (SocialProvider $provider): array => [

@@ -15,9 +15,22 @@ use Modules\Admin\Http\Controllers\Web\MediaController;
 use Modules\Admin\Http\Controllers\Web\MenuController;
 use Modules\Admin\Http\Controllers\Web\PageController;
 use Modules\Admin\Http\Controllers\Web\SettingController;
+use Modules\Admin\Http\Controllers\Web\SitemapController;
 use Modules\Admin\Http\Controllers\Web\UserController;
 use Modules\Admin\Http\Controllers\Web\WidgetController;
 use Modules\Admin\Http\Middleware\RequireAdminPermission;
+
+Route::get('sitemap.xml', [SitemapController::class, 'index'])
+    ->name('sitemap.xml');
+
+Route::get('sitemap/{page}.xml', [SitemapController::class, 'pages'])
+    ->name('sitemap.pages')
+    ->where('page', '[a-z0-9\-]+');
+
+Route::get('sitemap/{provider}/page-{page}.xml', [SitemapController::class, 'provider'])
+    ->name('sitemap.provider')
+    ->where('provider', '[a-z0-9\-]+')
+    ->where('page', '[0-9]+');
 
 Route::middleware(['auth:web'])
     ->prefix(config('app.admin_prefix', 'admin'))

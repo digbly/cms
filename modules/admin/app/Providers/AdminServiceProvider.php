@@ -6,8 +6,9 @@ use App\Facades\AdminTranslation;
 use App\Facades\Menu;
 use App\Facades\NavMenu;
 use App\Facades\Setting;
+use App\Facades\Sitemap;
+use App\Models\Pages\PageTranslation;
 use App\Support\MenuRepository;
-use Illuminate\Console\Scheduling\Schedule;
 use Modules\Admin\Enums\DashboardPermission;
 use Modules\Admin\Enums\MediaPermission;
 use Modules\Admin\Enums\MenuPermission;
@@ -59,6 +60,15 @@ class AdminServiceProvider extends ModuleServiceProvider
         $this->registerMenuLocations();
         $this->registerSettings();
         $this->registerAdminTranslations();
+        $this->registerSitemaps();
+    }
+
+    /**
+     * Register the content sources that contribute URLs to the sitemap.
+     */
+    protected function registerSitemaps(): void
+    {
+        Sitemap::register('pages', PageTranslation::class);
     }
 
     /**
@@ -232,6 +242,18 @@ class AdminServiceProvider extends ModuleServiceProvider
             ->default(false)
             ->type('boolean')
             ->rules(['nullable', 'boolean'])
+            ->add();
+
+        Setting::make('multiple_language')
+            ->default('none')
+            ->type('select')
+            ->rules(['nullable', 'string', 'in:none,session,prefix,subdomain'])
+            ->add();
+
+        Setting::make('language')
+            ->default((string) config('translatable.fallback_locale', 'en'))
+            ->type('string')
+            ->rules(['nullable', 'string', 'max:10'])
             ->add();
 
         $this->registerSocialLoginSettings();

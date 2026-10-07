@@ -5,10 +5,13 @@ namespace Modules\Blog\Providers;
 use App\Facades\AdminTranslation;
 use App\Facades\Menu;
 use App\Facades\MenuBox;
+use App\Facades\Sitemap;
 use App\Support\MenuRepository;
 use Modules\Blog\Enums\Permission;
 use Modules\Blog\Models\Category;
+use Modules\Blog\Models\CategoryTranslation;
 use Modules\Blog\Models\Post;
+use Modules\Blog\Models\PostTranslation;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class BlogServiceProvider extends ModuleServiceProvider
@@ -42,6 +45,16 @@ class BlogServiceProvider extends ModuleServiceProvider
         $this->registerNavigation();
         $this->registerMenuBoxes();
         $this->registerAdminTranslations();
+        $this->registerSitemaps();
+    }
+
+    /**
+     * Register the blog content sources that contribute URLs to the sitemap.
+     */
+    protected function registerSitemaps(): void
+    {
+        Sitemap::register('post-categories', CategoryTranslation::class);
+        Sitemap::register('posts', PostTranslation::class);
     }
 
     /**

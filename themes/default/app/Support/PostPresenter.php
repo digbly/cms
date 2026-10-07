@@ -32,7 +32,7 @@ class PostPresenter
             'author_name' => $post->relationLoaded('author') ? $post->author?->name : null,
             'created_at' => $post->created_at?->toIso8601String(),
             'url' => $translation?->slug
-                ? route('default.posts.show', $translation->slug, false)
+                ? home_url("posts/{$translation->slug}", app()->getLocale())
                 : null,
             'categories' => $categories
                 ->map(fn (Category $category) => self::category($category))
@@ -55,7 +55,7 @@ class PostPresenter
             'description' => $translation?->description,
             'posts_count' => $category->posts_count ?? null,
             'url' => $translation?->slug
-                ? route('default.categories.show', $translation->slug, false)
+                ? home_url("categories/{$translation->slug}", app()->getLocale())
                 : null,
         ];
     }

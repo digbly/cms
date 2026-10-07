@@ -1,5 +1,6 @@
 <?php
 
+use App\Contracts\Setting as SettingContract;
 use App\Contracts\ThemeSetting as ThemeSettingContract;
 use App\Themes\FileRepository;
 use App\Themes\Theme;
@@ -92,5 +93,43 @@ if (! function_exists('theme_asset')) {
         $theme ??= theme_name();
 
         return asset(trim(config('themes.paths.assets_url', 'themes'), '/').'/'.$theme.'/'.ltrim($asset, '/'));
+    }
+}
+
+if (! function_exists('setting')) {
+    /**
+     * Read an application setting value.
+     */
+    function setting(string $key, mixed $default = null): mixed
+    {
+        if (! app()->bound(SettingContract::class)) {
+            return $default;
+        }
+
+        return app(SettingContract::class)->get($key, $default);
+    }
+}
+
+if (! function_exists('home_url')) {
+    /**
+     * Build an absolute URL on the public front end, honouring the
+     * `multiple_language` setting.
+     *
+     * In `prefix` mode the default language stays unprefixed while every other
+     * language is served under its `{locale}` segment, e.g. `/posts/hello` and
+     * `/vi/posts/hello`.
+     */
+    function home_url(?string $uri = null, ?string $locale = null): string
+    {
+        $locale ??= app()->getLocale();
+        $multipleLanguage = setting('multiple_language', 'none');
+        $language = setting('language', config('translatable.fallback_locale', 'en'));
+        $url = url('/');
+
+        if ($multipleLanguage === 'prefix' && $language !== $locale) {
+            $url = rtrim($url.'/'.$locale, '/');
+        }
+
+        return $uri ? $url.'/'.trim($uri, '/') : $url;
     }
 }
