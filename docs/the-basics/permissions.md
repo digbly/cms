@@ -7,11 +7,52 @@ persisted as Spatie permissions.
 ## Declare permissions
 
 Add a PHP enum in the owning module (`modules/reports/app/Enums/Permission.php`)
-with the permission cases and a `values()` method, then register them in
-`App\Providers\PermissionServiceProvider` via `App\Support\PermissionRegistry`.
+with the permission cases and a `values()` method.
 
-Existing enums: `Modules\Auth\Enums\Permission`, `Modules\Admin\Enums\*Permission`,
-`Modules\Blog\Enums\Permission`.
+```php
+namespace Modules\Reports\Enums;
+
+enum Permission: string
+{
+    case View = 'reports.view';
+    case Create = 'reports.create';
+    case Update = 'reports.update';
+    case Delete = 'reports.delete';
+
+    /**
+     * @return list<string>
+     */
+    public static function values(): array
+    {
+        return array_map(
+            static fn (self $case): string => $case->value,
+            self::cases()
+        );
+    }
+}
+```
+
+## Register permissions
+
+Register the enum in `App\Providers\PermissionServiceProvider::boot()` by
+spreading its `values()` into `App\Support\PermissionRegistry`:
+
+```php
+use Modules\Reports\Enums\Permission as ReportsPermission;
+
+public function boot(): void
+{
+    $this->app->make(PermissionRegistry::class)->register([
+        // existing enums...
+        ...ReportsPermission::values(),
+    ]);
+}
+```
+
+`PermissionRegistry::register()` accepts a single permission string or an array
+of them, stores them deduplicated, and `all()` returns the final catalog.
+
+Existing enums: `Modules\Admin\Enums\*Permission`, `Modules\Blog\Enums\Permission`.
 
 ```bash
 php artisan permission:generate
