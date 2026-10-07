@@ -9,6 +9,7 @@ service provider `boot()`, so a disabled module contributes nothing.
 ```php
 use App\Facades\Menu;
 use App\Support\MenuRepository;
+use Modules\Reports\Enums\Permission;
 
 Menu::make('reports', fn () => [
     'label' => __('reports.nav.reports'),

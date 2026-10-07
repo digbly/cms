@@ -25,7 +25,9 @@ admin routes under the admin prefix and guard each action with
 ## 3. Return an Inertia page from the controller
 
 ```php
-public function index(Request $request): \Inertia\Response
+use Inertia\Response;
+
+public function index(Request $request): Response
 {
     return Inertia::render('Reports::reports/Index', [
         'title' => __('reports.title'),
@@ -76,7 +78,8 @@ Name list pages `<area>/Index.tsx` and create/edit pages `<area>/Form.tsx`.
 - **Translations** — register the namespace and add
   `resources/lang/{en,vi}/<group>.php`; see
   [Translation](../the-basics/translation.md).
-- **Permissions** — declare the enum and run `permission:generate`; see
+- **Permissions** — declare the enum, register it in
+  `PermissionServiceProvider`, and run `permission:generate`; see
   [Permissions](../the-basics/permissions.md).
 
 ## 6. Build
