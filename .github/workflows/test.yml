@@ -52,8 +52,6 @@ jobs:
     - name: Directory Permissions
       run: |
         chmod -R 777 storage bootstrap/cache
-        chmod 660 storage/oauth-public.key
-        chmod 600 storage/oauth-private.key
 
     - name: Create Database
       run: |
