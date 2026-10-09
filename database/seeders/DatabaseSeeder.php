@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Modules\Auth\Models\User;
+use Themes\Default\Database\Seeders\DefaultThemeSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,6 +23,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-        $this->call(BlogDemoSeeder::class);
+        $this->call(DefaultThemeSeeder::class);
     }
 }

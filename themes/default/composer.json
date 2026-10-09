@@ -9,7 +9,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Themes\\Default\\": "app/"
+            "Themes\\Default\\": "app/",
+            "Themes\\Default\\Database\\Seeders\\": "database/seeders/"
         }
     }
 }
